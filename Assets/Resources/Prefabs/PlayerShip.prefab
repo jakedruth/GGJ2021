@@ -146,7 +146,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf1b15dd8ffe704c8250bf37a7180b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 6
+  maxHP: 100
+  hp: 0
+  sailCrew: 0
+  cannonCrew: 0
+  repairCrew: 0
+  baseSpeed: 6
+  crewSpeedBonus: 0.5
   turnSpeed: 135
   acceleration: 4
   cannonBallPrefabName: CannonBall

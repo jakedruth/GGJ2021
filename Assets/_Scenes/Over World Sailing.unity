@@ -1300,6 +1300,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2189481771019135323, guid: 70979923608c31a4bb48d026fa271103, type: 3}
+      propertyPath: reloadBaseRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189481771019135323, guid: 70979923608c31a4bb48d026fa271103, type: 3}
+      propertyPath: crewReloadBonus
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70979923608c31a4bb48d026fa271103, type: 3}
 --- !u!1001 &6761772076074578259
