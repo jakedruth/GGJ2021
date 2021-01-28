@@ -12,7 +12,6 @@ public class PlayerInput : MonoBehaviour
         _shipController = GetComponent<ShipController>();
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -27,5 +26,15 @@ public class PlayerInput : MonoBehaviour
         }
 
         _shipController.HandleMovementInput(inputDirection);
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            _shipController.FireLeft();
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            _shipController.FireRight();
+        }
     }
 }
