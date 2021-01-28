@@ -56,3 +56,7 @@ public class GameManager : MonoBehaviour
 [System.Serializable]
 public class UnityEventBool : UnityEvent<bool>
 { }
+
+[System.Serializable]
+public class UnityEventShip : UnityEvent<ShipController>
+{ }

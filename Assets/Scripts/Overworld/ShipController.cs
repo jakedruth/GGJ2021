@@ -1,20 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ShipController : MonoBehaviour
 {
     [Header("Ship Health")]
     public float maxHP;
     public float hp;
+    public UnityEventShip onShipDestroyed;
 
     [Header("Crew Variables")]
     [PlusMinus(0, 100)]
-    public int sailCrew;
+    public int crewSailing;
     [PlusMinus(0, 100)]
-    public int cannonCrew;
+    public int crewCannons;
     [PlusMinus(0, 100)]
-    public int repairCrew;
+    public int crewRepairs;
 
     [Header("Sail/ Movement Variables")]
     public float baseSpeed;
@@ -33,9 +36,12 @@ public class ShipController : MonoBehaviour
     private float _leftCannonCoolDown;
     private float _rightCannonCoolDown;
 
+    [Header("Repair Variables")]
+    public float crewRepairRate;
+
     void Start()
     {
-        SetHPToMax();
+        InitShip();
     }
 
     void Update()
@@ -51,17 +57,38 @@ public class ShipController : MonoBehaviour
             _rightCannonCoolDown += reloadBaseRate * Time.deltaTime;
         else
             _rightCannonCoolDown = 1;
+
+        if (hp < maxHP)
+            hp += crewRepairRate * crewRepairs * Time.deltaTime;
+        else
+            hp = maxHP;
+
+        //* Debug Code
+        if (Input.GetKeyDown(KeyCode.Space))
+            TakeDamage(30);
+        /* End Debug Code */
     }
 
-    public void SetHPToMax()
+    public void InitShip()
     {
         hp = maxHP;
+        _leftCannonCoolDown = _rightCannonCoolDown = 1;
+    }
+
+    public void TakeDamage(float amount)
+    {
+        hp -= amount;
+        if (hp <= 0)
+        {
+            hp = 0;
+            onShipDestroyed?.Invoke(this);
+        }
     }
 
     public void HandleMovementInput(Vector2 input)
     {
         bool hasInput = input.sqrMagnitude > 0;
-        float targetSpeed = hasInput ? baseSpeed + crewSpeedBonus * sailCrew : 0;
+        float targetSpeed = hasInput ? baseSpeed + crewSpeedBonus * crewSailing : 0;
 
         _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
 
@@ -82,8 +109,8 @@ public class ShipController : MonoBehaviour
         if (_leftCannonCoolDown < 1)
             return;
 
-        _leftCannonCoolDown = 0;
-        SpawnCannonballAtTransform(leftCannonFirePoint);
+        if (FireCannons(leftCannonFirePoint))
+            _leftCannonCoolDown = 0;
     }
 
     public void FireRight()
@@ -91,14 +118,67 @@ public class ShipController : MonoBehaviour
         if (_rightCannonCoolDown < 1)
             return;
 
-        _rightCannonCoolDown = 0;
-        SpawnCannonballAtTransform(rightCannonFirePoint);
+        if (FireCannons(rightCannonFirePoint))
+            _rightCannonCoolDown = 0;
     }
 
-    private void SpawnCannonballAtTransform(Transform t)
+    private bool FireCannons(Transform cannons)
+    {
+        if (crewCannons <= 0)
+            return false;
+
+        float totalTime = 0.1f * Mathf.Sqrt(crewCannons);
+
+        List<int> indices = new List<int>();
+        for (int i = 0; i < crewCannons; i++)
+        {
+            indices.Add(i);
+        }
+
+        Shuffle(indices);
+
+        for (int i = 0; i < indices.Count; i++)
+        {
+            int index = indices[i];
+            float t = (index + 1) / (crewCannons + 1f);
+            float delay = totalTime * ((float) i / crewCannons);
+
+            Vector3 position = Vector3.Lerp(cannons.GetChild(0).position, cannons.GetChild(1).position, t);
+            Vector3 relativePosition = cannons.InverseTransformPoint(position);
+
+            Vector3 direction = Vector3.Lerp(cannons.GetChild(0).right, cannons.GetChild(1).right, t);
+            Vector3 relativeDirection = cannons.InverseTransformDirection(direction);
+            
+            StartCoroutine(Fire(cannons, relativePosition, relativeDirection, delay));
+        }
+
+        return true;
+    }
+
+    private IEnumerator Fire(Transform cannons, Vector3 relativePosition, Vector3 relativeDirection, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.right, cannons.TransformDirection(relativeDirection));
+        SpawnCannonball(cannons.TransformPoint(relativePosition), rotation);
+    }
+
+    private void SpawnCannonball(Vector3 position, Quaternion rotation)
     {
         Cannonball resource = Resources.Load<Cannonball>($"Prefabs/{cannonBallPrefabName}");
-        Cannonball cb = Instantiate(resource, t.position, t.rotation);
+        Cannonball cb = Instantiate(resource, position, rotation);
         cb.InitCannonBall(transform, transform.right * _speed);
+    }
+
+    private static readonly System.Random RNG = new System.Random();
+    public static void Shuffle<T>(IList<T> list)  
+    {  
+        int n = list.Count;  
+        while (n > 1) {  
+            n--;  
+            int k = RNG.Next(n + 1);  
+            T value = list[k];  
+            list[k] = list[n];  
+            list[n] = value;  
+        }  
     }
 }
