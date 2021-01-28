@@ -6,6 +6,8 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     private ShipController _shipController;
+    public Transform fireLeftText;
+    public Transform fireRightText;
 
     void Awake()
     {
@@ -48,5 +50,8 @@ public class PlayerInput : MonoBehaviour
             if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
                 _shipController.sailAmount--;
         }
+
+        fireLeftText.rotation = Quaternion.identity;
+        fireRightText.rotation = Quaternion.identity;
     }
 }

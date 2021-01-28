@@ -29,7 +29,7 @@ public class Cannonball : MonoBehaviour
         }
 
         transform.GetChild(0).localScale = Vector3.one * scaleOverTime.Evaluate(_lifeTime / _totalLifeTime);
-        transform.position += (transform.right * moveSpeed) * Time.deltaTime;
+        transform.position += (_inheritVel + transform.right * moveSpeed) * Time.deltaTime;
     }
 
     public void InitCannonBall(Transform owner, Vector3 inheritVel)
