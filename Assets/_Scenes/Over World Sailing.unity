@@ -1365,6 +1365,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2189481771019135323, guid: 70979923608c31a4bb48d026fa271103, type: 3}
+      propertyPath: sailAmount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189481771019135323, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: crewRepairRate
       value: 0.1
       objectReference: {fileID: 0}

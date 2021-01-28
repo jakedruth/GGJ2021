@@ -36,5 +36,17 @@ public class PlayerInput : MonoBehaviour
         {
             _shipController.FireRight();
         }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (_shipController.sailAmount != ShipController.Sails.FULL_SAILS)
+                _shipController.sailAmount++;
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
+                _shipController.sailAmount--;
+        }
     }
 }

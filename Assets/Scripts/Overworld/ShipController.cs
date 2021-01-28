@@ -6,6 +6,15 @@ using Random = UnityEngine.Random;
 
 public class ShipController : MonoBehaviour
 {
+    public enum Sails
+    {
+        NO_SAILS,
+        QUARTER_SAILS,
+        HALF_SAILS,
+        THREE_QUARTERS_SAILS,
+        FULL_SAILS
+    }
+
     [Header("Ship Health")]
     public float maxHP;
     public float hp;
@@ -20,6 +29,7 @@ public class ShipController : MonoBehaviour
     public int crewRepairs;
 
     [Header("Sail/ Movement Variables")]
+    public Sails sailAmount;
     public float baseSpeed;
     public float crewSpeedBonus;
     private float _speed;
@@ -89,13 +99,14 @@ public class ShipController : MonoBehaviour
     {
         bool hasInput = input.sqrMagnitude > 0;
         float targetSpeed = hasInput ? baseSpeed + crewSpeedBonus * crewSailing : 0;
+        targetSpeed *= (float)sailAmount / (float)Sails.FULL_SAILS;
 
         _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
 
         if (hasInput)
         {
             float targetAngle = Vector2.SignedAngle(Vector2.right, input);
-            _heading = Mathf.MoveTowardsAngle(_heading, targetAngle, turnSpeed * _speed / baseSpeed * Time.deltaTime);
+            _heading = Mathf.MoveTowardsAngle(_heading, targetAngle, turnSpeed * (0.3f + 0.7f * _speed / baseSpeed) * Time.deltaTime);
             transform.localRotation = Quaternion.AngleAxis(_heading, Vector3.forward);
         }
 
