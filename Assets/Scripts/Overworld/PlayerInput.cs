@@ -33,15 +33,41 @@ public class PlayerInput : MonoBehaviour
 
         _shipController.HandleMovementInput(inputDirection);
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            _shipController.FireLeft();
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 pos = transform.position;
+
+            Vector3 delta = mousePos - pos;
+            Vector3 dir = delta.normalized;
+
+            float angle = Vector2.SignedAngle(transform.right, dir);
+           
+
+            if (Mathf.Abs(angle) <= 30)
+            {
+                _shipController.FireLeft();
+                _shipController.FireRight();
+            }
+            else
+            {
+                float side = Mathf.Sign(angle);
+                if (side > 0)
+                    _shipController.FireLeft();
+                else 
+                    _shipController.FireRight();
+            }
         }
 
-        if (Input.GetMouseButton(1))
-        {
-            _shipController.FireRight();
-        }
+        //if (Input.GetMouseButton(0))
+        //{
+        //    _shipController.FireLeft();
+        //}
+
+        //if (Input.GetMouseButton(1))
+        //{
+        //    _shipController.FireRight();
+        //}
 
         if (Input.mouseScrollDelta.y > 0)
         {

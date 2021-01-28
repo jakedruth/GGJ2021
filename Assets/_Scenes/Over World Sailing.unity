@@ -1264,11 +1264,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 896546887591945746, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: m_text
-      value: '[RM]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1676022579066937768, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: m_text
-      value: '[LM]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2189481771019135300, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: fireLeftText
