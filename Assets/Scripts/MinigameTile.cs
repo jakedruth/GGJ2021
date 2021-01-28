@@ -8,16 +8,28 @@ public class MinigameTile : MonoBehaviour
     MinigameManager minigameManager;
     TMP_Text text;
 
-    public Sprite sprite;
-    public int tileDepth = 3;
+    public List<Sprite> tileSpriteList;
+    public List<Sprite> crackSpriteList;
+    public Sprite currentTileSprite;
+    public Sprite currentCrackSprite;
+    public int tileDepthMax = 3;
+    public int tileDepthCurrent;
 
     void Start()
     {
         minigameManager = GameObject.Find("Minigame Manager").GetComponent<MinigameManager>();
-        text = transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
-        text.text = tileDepth.ToString();
-    }
 
+        tileDepthCurrent = tileDepthMax;
+
+        //Temporary number display for testing purposes
+        text = transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+        text.text = tileDepthCurrent.ToString();
+
+        //Assign references to the current tile sprite and crack sprite
+
+        //Assign the initial sprite
+    }
+    
     void OnMouseDown()
     {
         Dig(minigameManager.pickDamage);
@@ -25,10 +37,15 @@ public class MinigameTile : MonoBehaviour
 
     void Dig(int amount)
     {
-        tileDepth -= amount;
-        text.text = tileDepth.ToString();
+        tileDepthCurrent -= amount;
+        text.text = tileDepthCurrent.ToString();
 
-        if (tileDepth <= 0)
+        if (tileDepthCurrent <= 0)
             Destroy(gameObject);
+    }
+
+    void AssignSpriteBasedOnDepth()
+    {
+
     }
 }
