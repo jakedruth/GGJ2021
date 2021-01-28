@@ -18,34 +18,38 @@ public class PlayerInput : MonoBehaviour
     void Update()
     {
         Vector2 inputDirection = Vector2.zero;
-        if (Input.GetMouseButton(0))
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 pos = transform.position;
+        if (Input.GetKey(KeyCode.A))
+            inputDirection.x -= 1;
+        if (Input.GetKey(KeyCode.D))
+            inputDirection.x += 1;
 
-            Vector3 delta = mousePos - pos;
-            inputDirection = delta.normalized;
-        }
+        if (Input.GetKey(KeyCode.W))
+            inputDirection.y += 1;
+        if (Input.GetKey(KeyCode.S))
+            inputDirection.y -= 1;
+
+        if (inputDirection.sqrMagnitude > 0)
+            inputDirection.Normalize();
 
         _shipController.HandleMovementInput(inputDirection);
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetMouseButton(0))
         {
             _shipController.FireLeft();
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetMouseButton(1))
         {
             _shipController.FireRight();
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.mouseScrollDelta.y > 0)
         {
             if (_shipController.sailAmount != ShipController.Sails.FULL_SAILS)
                 _shipController.sailAmount++;
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.mouseScrollDelta.y < 0)
         {
             if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
                 _shipController.sailAmount--;
