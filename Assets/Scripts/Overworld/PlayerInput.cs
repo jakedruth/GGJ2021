@@ -22,6 +22,8 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Cannon Controls
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             _shipController.FireLeft();
@@ -31,6 +33,36 @@ public class PlayerInput : MonoBehaviour
         {
             _shipController.FireRight();
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 pos = transform.position;
+
+            Vector3 delta = mousePos - pos;
+            Vector3 dir = delta.normalized;
+
+            float angle = Vector2.SignedAngle(transform.right, dir);
+           
+            // TODO: Make 30 a public variable, and maybe a setting a player can fiddle with
+            if (Mathf.Abs(angle) <= 30)
+            {
+                _shipController.FireLeft();
+                _shipController.FireRight();
+            }
+            else
+            {
+                float side = Mathf.Sign(angle);
+                if (side > 0)
+                    _shipController.FireLeft();
+                else 
+                    _shipController.FireRight();
+            }
+        }
+
+        #endregion
+
+        #region Sails Controlls
 
         if (Input.GetKeyDown(KeyCode.W) || Input.mouseScrollDelta.y > 0)
         {
@@ -43,6 +75,10 @@ public class PlayerInput : MonoBehaviour
             if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
                 _shipController.sailAmount--;
         }
+
+        #endregion
+
+        #region Turning Input
 
         if (_isMovingToTarget)
         {
@@ -74,6 +110,8 @@ public class PlayerInput : MonoBehaviour
             if (Input.GetKey(KeyCode.D))
                 _shipController.HandleMovementInput(-transform.up);
         }
+
+        #endregion
 
         fireLeftText.rotation = Quaternion.identity;
         fireRightText.rotation = Quaternion.identity;
