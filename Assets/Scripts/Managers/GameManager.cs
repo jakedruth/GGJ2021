@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public bool isPaused { get; private set; }
-    public UnityEventBool onPausedChanged;
+    public UnityEventBool onPausedChanged = new UnityEventBool();
 
     void Awake()
     {
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
 
 [System.Serializable]
 public class UnityEventBool : UnityEvent<bool>
+{ }
+public class UnityEventFloat : UnityEvent<float>
 { }
 
 [System.Serializable]

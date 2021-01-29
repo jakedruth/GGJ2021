@@ -18,7 +18,8 @@ public class ShipController : MonoBehaviour
     [Header("Ship Health")]
     public float maxHP;
     public float hp;
-    public UnityEventShip onShipDestroyed;
+    public UnityEventFloat onShipHPChanged = new UnityEventFloat();
+    public UnityEventShip onShipDestroyed = new UnityEventShip();
 
     [Header("Crew Variables")]
     public Crew crew;
@@ -50,7 +51,7 @@ public class ShipController : MonoBehaviour
     [Header("Repair Variables")]
     public float crewRepairRate;
 
-    void Awake()
+    void Start()
     {
         InitShip();
     }
@@ -82,10 +83,17 @@ public class ShipController : MonoBehaviour
         else
             rightCannonCoolDown = 1;
 
+
+        // Handle Crew Repairs
         if (hp < maxHP)
-            hp += crewRepairRate * crew.repair.working * Time.deltaTime;
-        else
-            hp = maxHP;
+        {
+            float repairAmount = crewRepairRate * crew.repair.working * Time.deltaTime;
+            hp += repairAmount;
+            if (hp > maxHP)
+                hp = maxHP;
+
+            onShipHPChanged?.Invoke(repairAmount);
+        }
 
         //* Debug Code
         if (Input.GetKeyDown(KeyCode.Space))
@@ -104,7 +112,12 @@ public class ShipController : MonoBehaviour
     public void TakeDamage(float amount)
     {
         hp -= amount;
-        if (hp <= 0)
+        onShipHPChanged?.Invoke(amount);
+        if (hp > maxHP)
+        {
+            hp = maxHP;
+        }
+        else if (hp <= 0)
         {
             hp = 0;
             onShipDestroyed?.Invoke(this);

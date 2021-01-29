@@ -17,10 +17,19 @@ public class PlayerInput : MonoBehaviour
 
     void Awake()
     {
-        shipController = GetComponent<ShipController>();
-
         moveToTarget.transform.SetParent(null);
         moveToTarget.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        shipController = GetComponent<ShipController>();
+        shipController.onShipHPChanged.AddListener(OnShipChangeHP);
+    }
+
+    private void OnDisable()
+    {
+        shipController.onShipHPChanged.RemoveListener(OnShipChangeHP);
     }
 
     void Start()
@@ -70,6 +79,11 @@ public class PlayerInput : MonoBehaviour
             c.sails.working, c.sails.onRoute, c.sails.max,
             c.cannons.working, c.cannons.onRoute, c.cannons.max,
             c.repair.working, c.repair.onRoute, c.repair.max);
+    }
+
+    public void OnShipChangeHP(float amount)
+    {
+        //OverWorldHUD.instance.SetHP(shipController.hp, shipController.maxHP);
     }
 
     // Update is called once per frame
@@ -129,6 +143,12 @@ public class PlayerInput : MonoBehaviour
                 shipController.targetSailAmount--;
         }
 
+        // Update HUD
+        OverWorldHUD.instance.SetSails01(shipController.sailAmount);
+        OverWorldHUD.instance.SetTargetSail(shipController.targetSailAmount);
+        OverWorldHUD.instance.SetHP(shipController.hp, shipController.maxHP);
+        OverWorldHUD.instance.SetSpeed(shipController.speed);
+
         #endregion
 
         #region Turning Input
@@ -168,6 +188,7 @@ public class PlayerInput : MonoBehaviour
         }
 
         #endregion
+
 
         fireLeftText.rotation = Quaternion.identity;
         fireRightText.rotation = Quaternion.identity;

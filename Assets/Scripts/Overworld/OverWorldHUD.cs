@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,11 +9,16 @@ public class OverWorldHUD : MonoBehaviour
 {
     public static OverWorldHUD instance;
 
-    [Header("Ship Variables")]
+    [Header("Ship Bars")]
     public RectTransform hpValue;
     public RectTransform sailsValue;
-    public Transform sailsTarget;
+    public RectTransform sailsTarget;
     private float _sailsTargetMaxX;
+
+    [Header("Ship TMP_Texts")] 
+    public TMP_Text hpText;
+    public TMP_Text sailAmountText;
+    public TMP_Text speedText;
 
     [Header("Crew TMP_Texts")]
     public TMP_Text availableText;
@@ -59,9 +65,8 @@ public class OverWorldHUD : MonoBehaviour
 
     public void SetHP(float value, float max)
     {
-        hpValue.localScale = new Vector3(value, 1f, 1f);
-
-        // TODO: Set hp text
+        hpValue.localScale = new Vector3(value / max, 1f, 1f);
+        hpText.text = $"{value:f1} / {max:f1}";
     }
 
     public void SetSails01(float value)
@@ -76,16 +81,37 @@ public class OverWorldHUD : MonoBehaviour
         pos.x = _sailsTargetMaxX * (value * 2f - 1f);
         sailsTarget.localPosition = pos;
 
-        // TODO: Set full sail text
+        string sailPosition = "Sail Amount: ";
+        switch (sails)
+        {
+            case ShipController.Sails.NO_SAILS:
+                sailPosition += "No Sails";
+                break;
+            case ShipController.Sails.QUARTER_SAILS:
+                sailPosition += "¼ Sails";
+                break;
+            case ShipController.Sails.HALF_SAILS:
+                sailPosition += "½ Sails";
+                break;
+            case ShipController.Sails.THREE_QUARTERS_SAILS:
+                sailPosition += "¾ Sails";
+                break;
+            case ShipController.Sails.FULL_SAILS:
+                sailPosition += "Full Sails";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(sails), sails, null);
+        }
 
+        sailAmountText.text = sailPosition;
     }
 
     public void SetSpeed(float value)
     {
-        const float unitsPerSecondToKnots = 0.5f; // ~~Rough~~ estimate of units to meters to knots
+        const float unitsPerSecondToKnots = 0.6f; // ~~Rough~~ estimate of units to meters to knots
         float knots = value * unitsPerSecondToKnots;
 
-        // TODO: Set speed text
+        speedText.text = $"Speed: {knots:f2} knots";
     }
     
     public void UpdateUI(int available, int availableMax,
