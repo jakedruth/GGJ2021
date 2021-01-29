@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class OverWorldHUD : MonoBehaviour
 {
+    public static OverWorldHUD instance;
+
     public TMP_Text availableText;
     public TMP_Text sailsText;
     public TMP_Text cannonsText;
@@ -18,11 +20,38 @@ public class OverWorldHUD : MonoBehaviour
     public Button repairsRemoveButton;
     public Button repairsAddButton;
 
-    void Start()
-    { }
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-    public void UpdateUI(int available, int availableMax, int sails, int sailsMoving, int sailsMax, int cannons,
-        int cannonsMoving, int cannonsMax, int repairs, int repairsMoving, int repairsMax)
+        instance = this;
+    }
+
+    void Start()
+    {
+        PlayerInput player = FindObjectOfType<PlayerInput>();
+        
+        // Sails
+        sailsRemoveButton.onClick.AddListener(() => { player.RemoveCrewMemberFromStation(StationType.SAILS); });
+        sailsAddButton.onClick.AddListener(() => { player.AddCrewMemberToStation(StationType.SAILS); });
+
+        // Cannons
+        cannonsRemoveButton.onClick.AddListener(() => { player.RemoveCrewMemberFromStation(StationType.CANNONS); });
+        cannonsAddButton.onClick.AddListener(() => { player.AddCrewMemberToStation(StationType.CANNONS); });
+
+        // Repairs
+        repairsRemoveButton.onClick.AddListener(() => { player.RemoveCrewMemberFromStation(StationType.REPAIRS); });
+        repairsAddButton.onClick.AddListener(() => { player.AddCrewMemberToStation(StationType.REPAIRS); });
+    }
+
+    public void UpdateUI(int available, int availableMax,
+        int sails, int sailsMoving, int sailsMax,
+        int cannons, int cannonsMoving, int cannonsMax,
+        int repairs, int repairsMoving, int repairsMax)
     {
         availableText.text = $"Available:\t{available} / {availableMax}";
         sailsText.text = $"Sails:\t\t{sails} / {sailsMoving} / {sailsMax}";

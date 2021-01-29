@@ -6,29 +6,16 @@ using UnityEngine;
 public class OverWorldHandler : MonoBehaviour
 {
     private OverWorldHUD _hud;
-    public ShipController player;
-    public Crew crew;
+    public PlayerInput player;
 
     void Start()
     {
         _hud = FindObjectOfType<OverWorldHUD>();
-        player = FindObjectOfType<PlayerInput>().GetComponent<ShipController>();
-        crew.sails.max = crew.cannons.max = crew.repair.max = 2;
+        player = FindObjectOfType<PlayerInput>();
+        
         UpdateHUD();
     }
-
-    public void HireCrewMember()
-    {
-        crew.AddCrewMember();
-        UpdateHUD();
-    }
-
-    public void FireCrewMember()
-    {
-        crew.RemoveCrewMember();
-        UpdateHUD();
-    }
-
+    
     public void UpdateHUD()
     {
         //_hud.UpdateUI();
@@ -38,8 +25,9 @@ public class OverWorldHandler : MonoBehaviour
 [Serializable]
 public class Crew
 {
-    [SerializeField]
-    public int members { get; private set; }
+    [SerializeField] 
+    public int members;
+    public float moveSpeed;
 
     public Station sails;
     public Station cannons;
@@ -72,30 +60,89 @@ public class Crew
             Debug.LogError("THIS AIN'T GOOD! YOU TRIED TO REMOVE A CREW BUT HAVE NO CREW");
     }
 
-    public IEnumerator AddMemberToStation(Station station, float delay)
+    public IEnumerator MoveMemberToStation(StationType type, Action updateHudCallback)
     {
-        station.moving += 1;
+        if (availableMembers <= 0)
+            yield break;
 
-        yield return new WaitForSeconds(delay);
-        
-        // Double check there is still a member trying to get into 
-        if (station.moving > 1)
+        Station s;
+        switch (type)
         {
-            station.moving -= 1;
-            station.working += 1;
+            case StationType.SAILS:
+                s = sails;
+                break;
+            case StationType.CANNONS:
+                s = cannons;
+                break;
+            case StationType.REPAIRS:
+                s = repair;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
+
+        s.onRoute += 1;
+        updateHudCallback.Invoke();
+
+        yield return new WaitForSeconds(moveSpeed);
+        
+        // Double check there is still a member is available in onRoute to get into 
+        if (s.onRoute <= 0)
+        {
+            updateHudCallback.Invoke();
+            yield break;
+        }
+
+        s.onRoute -= 1;
+        s.working += 1;
+
+        updateHudCallback.Invoke();
     }
+
+    public void RemoveMemberFromStation(StationType type)
+    {
+        Station s;
+        switch (type)
+        {
+            case StationType.SAILS:
+                s = sails;
+                break;
+            case StationType.CANNONS:
+                s = cannons;
+                break;
+            case StationType.REPAIRS:
+                s = repair;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+
+        if (s.membersInStation <= 0)
+            return;
+
+        s.RemoveCrewMember();
+    }
+}
+
+[System.Serializable]
+[SerializeField]
+public enum StationType
+{
+    SAILS,
+    CANNONS,
+    REPAIRS
 }
 
 [Serializable]
 public class Station
 {
     public int working;
-    public int moving;
+    public int onRoute;
     public int max;
+
     public int membersInStation
     {
-        get { return working + moving; }
+        get { return working + onRoute; }
     }
 
     public bool isFull
@@ -108,9 +155,9 @@ public class Station
         if (membersInStation == 0)
             return false;
 
-        if (moving > 1)
+        if (onRoute > 0)
         {
-            moving -= 1;
+            onRoute -= 1;
         }
         else
         {
@@ -118,5 +165,23 @@ public class Station
         }
 
         return true;
+    }
+
+    public int SetMax(int value)
+    {
+        if (value >= max)
+            max = value;
+        else if (onRoute > 0)
+        {
+            onRoute -= 1;
+            max = value;
+        }
+        else
+        {
+            working -= 1;
+            max = value;
+        }
+
+        return max;
     }
 }

@@ -6,9 +6,9 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(ShipController))]
 public class PlayerInput : MonoBehaviour
 {
-    private ShipController _shipController;
-    private EventSystem _eventSystem;
-
+    public ShipController shipController;
+    
+    [Header("Required Transforms")]
     public SpriteRenderer moveToTarget;
     public Transform fireLeftText;
     public Transform fireRightText;
@@ -17,11 +17,59 @@ public class PlayerInput : MonoBehaviour
 
     void Awake()
     {
-        _shipController = GetComponent<ShipController>();
-        _eventSystem = FindObjectOfType<EventSystem>();
+        shipController = GetComponent<ShipController>();
 
         moveToTarget.transform.SetParent(null);
         moveToTarget.enabled = false;
+    }
+
+    void Start()
+    {
+        UpdateHUD();
+    }
+
+    public void HireCrewMember()
+    {
+        shipController.crew.AddCrewMember();
+    }
+
+    public void FireCrewMember()
+    {
+        shipController.crew.RemoveCrewMember();
+    }
+
+    public void AddCrewMemberToStation(int stationID)
+    {
+        AddCrewMemberToStation((StationType)stationID);
+    }
+
+    public void AddCrewMemberToStation(StationType station)
+    {
+        if (shipController.crew.availableMembers <= 0)
+            return;
+
+        StartCoroutine(shipController.crew.MoveMemberToStation(station, UpdateHUD));
+    }
+
+    public void RemoveCrewMemberFromStation(int stationID)
+    {
+        RemoveCrewMemberFromStation((StationType)stationID);
+    }
+
+    public void RemoveCrewMemberFromStation(StationType station)
+    {
+        shipController.crew.RemoveMemberFromStation(station);
+        UpdateHUD();
+    }
+
+    public void UpdateHUD()
+    {
+        Crew c = shipController.crew;
+        OverWorldHUD.instance.UpdateUI(
+            c.availableMembers, c.members,
+            c.sails.working, c.sails.onRoute, c.sails.max,
+            c.cannons.working, c.cannons.onRoute, c.cannons.max,
+            c.repair.working, c.repair.onRoute, c.repair.max);
     }
 
     // Update is called once per frame
@@ -31,12 +79,12 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            _shipController.FireLeft();
+            shipController.FireLeft();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            _shipController.FireRight();
+            shipController.FireRight();
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -52,16 +100,16 @@ public class PlayerInput : MonoBehaviour
             // TODO: Make 30 a public variable, and maybe a setting a player can fiddle with
             if (Mathf.Abs(angle) <= 30)
             {
-                _shipController.FireLeft();
-                _shipController.FireRight();
+                shipController.FireLeft();
+                shipController.FireRight();
             }
             else
             {
                 float side = Mathf.Sign(angle);
                 if (side > 0)
-                    _shipController.FireLeft();
+                    shipController.FireLeft();
                 else 
-                    _shipController.FireRight();
+                    shipController.FireRight();
             }
         }
 
@@ -71,14 +119,14 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W) || Input.mouseScrollDelta.y > 0)
         {
-            if (_shipController.targetSailAmount != ShipController.Sails.FULL_SAILS)
-                _shipController.targetSailAmount++;
+            if (shipController.targetSailAmount != ShipController.Sails.FULL_SAILS)
+                shipController.targetSailAmount++;
         }
 
         if (Input.GetKeyDown(KeyCode.S)  || Input.mouseScrollDelta.y < 0)
         {
-            if (_shipController.targetSailAmount != ShipController.Sails.NO_SAILS)
-                _shipController.targetSailAmount--;
+            if (shipController.targetSailAmount != ShipController.Sails.NO_SAILS)
+                shipController.targetSailAmount--;
         }
 
         #endregion
@@ -89,7 +137,7 @@ public class PlayerInput : MonoBehaviour
         {
             Vector2 pos = transform.position;
             Vector2 delta = _target - pos;
-            _shipController.HandleMovementInput(delta.normalized);
+            shipController.HandleMovementInput(delta.normalized);
 
             const float rangeToStop = 1f;
             if (delta.sqrMagnitude <= rangeToStop * rangeToStop)
@@ -113,10 +161,10 @@ public class PlayerInput : MonoBehaviour
                 moveToTarget.enabled = _isMovingToTarget = false;
 
             if (Input.GetKey(KeyCode.A))
-                _shipController.HandleMovementInput(transform.up);
+                shipController.HandleMovementInput(transform.up);
 
             if (Input.GetKey(KeyCode.D))
-                _shipController.HandleMovementInput(-transform.up);
+                shipController.HandleMovementInput(-transform.up);
         }
 
         #endregion

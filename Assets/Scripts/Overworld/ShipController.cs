@@ -21,16 +21,11 @@ public class ShipController : MonoBehaviour
     public UnityEventShip onShipDestroyed;
 
     [Header("Crew Variables")]
-    [PlusMinus(0, 100)]
-    public int crewSailing;
-    [PlusMinus(0, 100)]
-    public int crewCannons;
-    [PlusMinus(0, 100)]
-    public int crewRepairs;
+    public Crew crew;
 
     [Header("Movement Variables")]
     public float baseSpeed;
-    public float crewSpeedBonus;
+    public float baseSpeedCrewBonus;
     private float _speed;
     public float turnSpeed;
     private float _heading;
@@ -40,12 +35,12 @@ public class ShipController : MonoBehaviour
     public Sails targetSailAmount;
     private float _sailAmount;
     public float changeSailRate;
-    public float crewChangeSailBonus;
+    public float changeSailRateCrewBonus;
 
     [Header("Cannon Ball Variables")] 
     public string cannonBallPrefabName;
     public float reloadBaseRate;
-    public float crewReloadBonus;
+    public float reloadBaseRateCrewBonus;
     public Transform leftCannonFirePoint;
     public Transform rightCannonFirePoint;
     private float _leftCannonCoolDown;
@@ -54,7 +49,7 @@ public class ShipController : MonoBehaviour
     [Header("Repair Variables")]
     public float crewRepairRate;
 
-    void Start()
+    void Awake()
     {
         InitShip();
     }
@@ -63,11 +58,11 @@ public class ShipController : MonoBehaviour
     {
         // Handle Sails
         float targetSails = (float) targetSailAmount / (float)Sails.FULL_SAILS;
-        float deltaSails = crewSailing > 0 ? changeSailRate + (crewSailing * crewChangeSailBonus) : 0;
+        float deltaSails = crew.sails.working > 0 ? changeSailRate + (crew.sails.working * changeSailRateCrewBonus) : 0;
         _sailAmount = Mathf.MoveTowards(_sailAmount, targetSails, deltaSails * Time.deltaTime);
         
         // Handle Speed
-        float targetSpeed = _sailAmount * (baseSpeed + crewSpeedBonus * crewSailing);
+        float targetSpeed = _sailAmount * (baseSpeed + baseSpeedCrewBonus * crew.sails.working);
         _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
         
         // Handle Movement
@@ -87,7 +82,7 @@ public class ShipController : MonoBehaviour
             _rightCannonCoolDown = 1;
 
         if (hp < maxHP)
-            hp += crewRepairRate * crewRepairs * Time.deltaTime;
+            hp += crewRepairRate * crew.repair.working * Time.deltaTime;
         else
             hp = maxHP;
 
@@ -101,6 +96,7 @@ public class ShipController : MonoBehaviour
     {
         hp = maxHP;
         _leftCannonCoolDown = _rightCannonCoolDown = 1;
+        //crew.sails.max = crew.cannons.max = crew.repair.max = 2;
         targetSailAmount = Sails.NO_SAILS;
     }
 
@@ -142,13 +138,13 @@ public class ShipController : MonoBehaviour
 
     private bool FireCannons(Transform cannons)
     {
-        if (crewCannons <= 0)
+        if (crew.cannons.working <= 0)
             return false;
 
-        float totalTime = 0.1f * Mathf.Sqrt(crewCannons);
+        float totalTime = 0.1f * Mathf.Sqrt(crew.cannons.working);
 
         List<int> indices = new List<int>();
-        for (int i = 0; i < crewCannons; i++)
+        for (int i = 0; i < crew.cannons.working; i++)
         {
             indices.Add(i);
         }
@@ -158,8 +154,8 @@ public class ShipController : MonoBehaviour
         for (int i = 0; i < indices.Count; i++)
         {
             int index = indices[i];
-            float t = (index + 1) / (crewCannons + 1f);
-            float delay = totalTime * ((float) i / crewCannons);
+            float t = (index + 1) / (crew.cannons.working + 1f);
+            float delay = totalTime * ((float) i / crew.cannons.working);
 
             Vector3 position = Vector3.Lerp(cannons.GetChild(0).position, cannons.GetChild(1).position, t);
             Vector3 relativePosition = cannons.InverseTransformPoint(position);

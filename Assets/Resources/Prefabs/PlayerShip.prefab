@@ -321,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06706bdb086adbf4799c8a2066a06e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shipController: {fileID: 0}
   moveToTarget: {fileID: 1149948217298852087}
   fireLeftText: {fileID: 3439239634715543217}
   fireRightText: {fileID: 2191050451570302598}
@@ -341,22 +342,34 @@ MonoBehaviour:
   onShipDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  crewSailing: 1
-  crewCannons: 1
-  crewRepairs: 1
+  crew:
+    members: 3
+    moveSpeed: 0.5
+    sails:
+      working: 0
+      moving: 0
+      max: 2
+    cannons:
+      working: 0
+      moving: 0
+      max: 2
+    repair:
+      working: 0
+      moving: 0
+      max: 2
   baseSpeed: 6
-  crewSpeedBonus: 0.5
+  baseSpeedCrewBonus: 0.5
   turnSpeed: 135
   acceleration: 4
   targetSailAmount: 0
-  changeSailRate: 0
-  crewChangeSailBonus: 0
+  changeSailRate: 0.4
+  changeSailRateCrewBonus: 0.1
   cannonBallPrefabName: CannonBall
   reloadBaseRate: 1
-  crewReloadBonus: 0.05
+  reloadBaseRateCrewBonus: 0.1
   leftCannonFirePoint: {fileID: 301293406}
   rightCannonFirePoint: {fileID: 7843527231198068910}
-  crewRepairRate: 0.1
+  crewRepairRate: 0.25
 --- !u!1 &2189481771447178214
 GameObject:
   m_ObjectHideFlags: 0
