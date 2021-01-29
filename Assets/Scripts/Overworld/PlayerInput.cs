@@ -22,11 +22,26 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            moveToTarget.transform.position = _target;
-            moveToTarget.enabled = _isMovingToTarget = true;
+            _shipController.FireLeft();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _shipController.FireRight();
+        }
+
+        if (Input.GetKeyDown(KeyCode.W) || Input.mouseScrollDelta.y > 0)
+        {
+            if (_shipController.sailAmount != ShipController.Sails.FULL_SAILS)
+                _shipController.sailAmount++;
+        }
+
+        if (Input.GetKeyDown(KeyCode.S)  || Input.mouseScrollDelta.y < 0)
+        {
+            if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
+                _shipController.sailAmount--;
         }
 
         if (_isMovingToTarget)
@@ -42,36 +57,22 @@ public class PlayerInput : MonoBehaviour
             }
         }
 
-
-        //if (Input.GetMouseButton(0))
-        //{
-        //    Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    Vector2 pos = transform.position;
-
-        //    Vector3 delta = mousePos - pos;
-        //    _shipController.HandleMovementInput(delta.normalized);
-        //}
-
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetMouseButton(0))
         {
-            _shipController.FireLeft();
+            _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            moveToTarget.transform.position = _target;
+            moveToTarget.enabled = _isMovingToTarget = true;
         }
-
-        if (Input.GetKeyDown(KeyCode.D))
+        else
         {
-            _shipController.FireRight();
-        }
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+                moveToTarget.enabled = _isMovingToTarget = false;
 
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (_shipController.sailAmount != ShipController.Sails.FULL_SAILS)
-                _shipController.sailAmount++;
-        }
+            if (Input.GetKey(KeyCode.A))
+                _shipController.HandleMovementInput(transform.up);
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
-                _shipController.sailAmount--;
+            if (Input.GetKey(KeyCode.D))
+                _shipController.HandleMovementInput(-transform.up);
         }
 
         fireLeftText.rotation = Quaternion.identity;
