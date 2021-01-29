@@ -6,7 +6,6 @@ using TMPro;
 public class MinigameTile : MonoBehaviour
 {
     MinigameManager minigameManager;
-    TMP_Text text;
 
     public List<Sprite> tileSpriteList;
     public List<Sprite> crackSpriteList;
@@ -66,10 +65,9 @@ public class MinigameTile : MonoBehaviour
             }
         }
     }
-
     void UseHammer()
     {
-        Dig(minigameManager.pickDamage * 2);
+        Dig(minigameManager.pickDamage * 3);
         List<Collider2D> neighbors = new List<Collider2D>();
 
         //Add the four adjacent tiles to the list
