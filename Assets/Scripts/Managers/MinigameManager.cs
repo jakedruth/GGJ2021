@@ -38,14 +38,23 @@ public class MinigameManager : MonoBehaviour
         //Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //RandomTest();
             GenerateLevel();
         }
     }
-    void RandomTest()
+    public void SwitchTools(string _tool)
     {
-        gridWidth = Mathf.RoundToInt(Random.Range(2f, 8f));
-        gridHeight = Mathf.RoundToInt(Random.Range(2f, 8f));
+        Debug.Log("Switching to" + _tool);
+        switch (_tool)
+        {
+            case "Pickaxe":
+                tool = ToolType.Pickaxe;
+                break;
+            case "Hammer":
+                tool = ToolType.Hammer;
+                break;
+            default:
+                break;
+        }
     }
     void GenerateLevel()
     {
