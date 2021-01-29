@@ -25,7 +25,7 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
-        UpdateHUD();
+        UpdateCrewSectionHUD();
     }
 
     public void HireCrewMember()
@@ -48,7 +48,7 @@ public class PlayerInput : MonoBehaviour
         if (shipController.crew.availableMembers <= 0)
             return;
 
-        StartCoroutine(shipController.crew.MoveMemberToStation(station, UpdateHUD));
+        StartCoroutine(shipController.crew.MoveMemberToStation(station, UpdateCrewSectionHUD));
     }
 
     public void RemoveCrewMemberFromStation(int stationID)
@@ -59,10 +59,10 @@ public class PlayerInput : MonoBehaviour
     public void RemoveCrewMemberFromStation(StationType station)
     {
         shipController.crew.RemoveMemberFromStation(station);
-        UpdateHUD();
+        UpdateCrewSectionHUD();
     }
 
-    public void UpdateHUD()
+    public void UpdateCrewSectionHUD()
     {
         Crew c = shipController.crew;
         OverWorldHUD.instance.UpdateUI(

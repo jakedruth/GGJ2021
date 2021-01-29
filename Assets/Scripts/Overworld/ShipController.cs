@@ -26,14 +26,15 @@ public class ShipController : MonoBehaviour
     [Header("Movement Variables")]
     public float baseSpeed;
     public float baseSpeedCrewBonus;
-    private float _speed;
+    internal float speed;
     public float turnSpeed;
     private float _heading;
     public float acceleration;
 
     [Header("Sail Variables")]
     public Sails targetSailAmount;
-    private float _sailAmount;
+
+    internal float sailAmount;
     public float changeSailRate;
     public float changeSailRateCrewBonus;
 
@@ -43,8 +44,8 @@ public class ShipController : MonoBehaviour
     public float reloadBaseRateCrewBonus;
     public Transform leftCannonFirePoint;
     public Transform rightCannonFirePoint;
-    private float _leftCannonCoolDown;
-    private float _rightCannonCoolDown;
+    internal float leftCannonCoolDown;
+    internal float rightCannonCoolDown;
 
     [Header("Repair Variables")]
     public float crewRepairRate;
@@ -59,27 +60,27 @@ public class ShipController : MonoBehaviour
         // Handle Sails
         float targetSails = (float) targetSailAmount / (float)Sails.FULL_SAILS;
         float deltaSails = crew.sails.working > 0 ? changeSailRate + (crew.sails.working * changeSailRateCrewBonus) : 0;
-        _sailAmount = Mathf.MoveTowards(_sailAmount, targetSails, deltaSails * Time.deltaTime);
+        sailAmount = Mathf.MoveTowards(sailAmount, targetSails, deltaSails * Time.deltaTime);
         
         // Handle Speed
-        float targetSpeed = _sailAmount * (baseSpeed + baseSpeedCrewBonus * crew.sails.working);
-        _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
+        float targetSpeed = sailAmount * (baseSpeed + baseSpeedCrewBonus * crew.sails.working);
+        speed = Mathf.MoveTowards(speed, targetSpeed, acceleration * Time.deltaTime);
         
         // Handle Movement
-        Vector3 vel = transform.right * _speed;
+        Vector3 vel = transform.right * speed;
         transform.position += vel * Time.deltaTime;
 
         // Handle Left Cannon
-        if (_leftCannonCoolDown < 1)
-            _leftCannonCoolDown += reloadBaseRate * Time.deltaTime;
+        if (leftCannonCoolDown < 1)
+            leftCannonCoolDown += reloadBaseRate * Time.deltaTime;
         else
-            _leftCannonCoolDown = 1;
+            leftCannonCoolDown = 1;
 
         // Handle Right Cannon
-        if (_rightCannonCoolDown < 1)
-            _rightCannonCoolDown += reloadBaseRate * Time.deltaTime;
+        if (rightCannonCoolDown < 1)
+            rightCannonCoolDown += reloadBaseRate * Time.deltaTime;
         else
-            _rightCannonCoolDown = 1;
+            rightCannonCoolDown = 1;
 
         if (hp < maxHP)
             hp += crewRepairRate * crew.repair.working * Time.deltaTime;
@@ -95,7 +96,7 @@ public class ShipController : MonoBehaviour
     public void InitShip()
     {
         hp = maxHP;
-        _leftCannonCoolDown = _rightCannonCoolDown = 1;
+        leftCannonCoolDown = rightCannonCoolDown = 1;
         //crew.sails.max = crew.cannons.max = crew.repair.max = 2;
         targetSailAmount = Sails.NO_SAILS;
     }
@@ -114,26 +115,26 @@ public class ShipController : MonoBehaviour
     {
         float targetAngle = Vector2.SignedAngle(Vector2.right, input);
         _heading = Mathf.MoveTowardsAngle(_heading, targetAngle,
-            turnSpeed * (0.3f + 0.7f * _speed / baseSpeed) * Time.deltaTime);
+            turnSpeed * (0.3f + 0.7f * speed / baseSpeed) * Time.deltaTime);
         transform.localRotation = Quaternion.AngleAxis(_heading, Vector3.forward);
     }
 
     public void FireLeft()
     {
-        if (_leftCannonCoolDown < 1)
+        if (leftCannonCoolDown < 1)
             return;
 
         if (FireCannons(leftCannonFirePoint))
-            _leftCannonCoolDown = 0;
+            leftCannonCoolDown = 0;
     }
 
     public void FireRight()
     {
-        if (_rightCannonCoolDown < 1)
+        if (rightCannonCoolDown < 1)
             return;
 
         if (FireCannons(rightCannonFirePoint))
-            _rightCannonCoolDown = 0;
+            rightCannonCoolDown = 0;
     }
 
     private bool FireCannons(Transform cannons)
@@ -180,7 +181,7 @@ public class ShipController : MonoBehaviour
     {
         Cannonball resource = Resources.Load<Cannonball>($"Prefabs/{cannonBallPrefabName}");
         Cannonball cb = Instantiate(resource, position, rotation);
-        cb.InitCannonBall(transform, transform.right * _speed);
+        cb.InitCannonBall(transform, transform.right * speed);
     }
 
     private static readonly System.Random RNG = new System.Random();

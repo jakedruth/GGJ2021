@@ -8,11 +8,19 @@ public class OverWorldHUD : MonoBehaviour
 {
     public static OverWorldHUD instance;
 
+    [Header("Ship Variables")]
+    public RectTransform hpValue;
+    public RectTransform sailsValue;
+    public Transform sailsTarget;
+    private float _sailsTargetMaxX;
+
+    [Header("Crew TMP_Texts")]
     public TMP_Text availableText;
     public TMP_Text sailsText;
     public TMP_Text cannonsText;
     public TMP_Text repairsText;
 
+    [Header("Crew Buttons")]
     public Button sailsRemoveButton;
     public Button sailsAddButton;
     public Button cannonsRemoveButton;
@@ -29,6 +37,7 @@ public class OverWorldHUD : MonoBehaviour
         }
 
         instance = this;
+        _sailsTargetMaxX = sailsTarget.localPosition.x;
     }
 
     void Start()
@@ -48,6 +57,37 @@ public class OverWorldHUD : MonoBehaviour
         repairsAddButton.onClick.AddListener(() => { player.AddCrewMemberToStation(StationType.REPAIRS); });
     }
 
+    public void SetHP(float value, float max)
+    {
+        hpValue.localScale = new Vector3(value, 1f, 1f);
+
+        // TODO: Set hp text
+    }
+
+    public void SetSails01(float value)
+    {
+        sailsValue.localScale = new Vector3(value, 1f, 1f);
+    }
+
+    public void SetTargetSail(ShipController.Sails sails)
+    {
+        float value = (float) sails / (float) ShipController.Sails.FULL_SAILS;
+        Vector3 pos = sailsTarget.localPosition;
+        pos.x = _sailsTargetMaxX * (value * 2f - 1f);
+        sailsTarget.localPosition = pos;
+
+        // TODO: Set full sail text
+
+    }
+
+    public void SetSpeed(float value)
+    {
+        const float unitsPerSecondToKnots = 0.5f; // ~~Rough~~ estimate of units to meters to knots
+        float knots = value * unitsPerSecondToKnots;
+
+        // TODO: Set speed text
+    }
+    
     public void UpdateUI(int available, int availableMax,
         int sails, int sailsMoving, int sailsMax,
         int cannons, int cannonsMoving, int cannonsMax,

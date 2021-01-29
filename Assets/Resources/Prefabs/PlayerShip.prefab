@@ -347,15 +347,15 @@ MonoBehaviour:
     moveSpeed: 0.5
     sails:
       working: 0
-      moving: 0
+      onRoute: 0
       max: 2
     cannons:
       working: 0
-      moving: 0
+      onRoute: 0
       max: 2
     repair:
       working: 0
-      moving: 0
+      onRoute: 0
       max: 2
   baseSpeed: 6
   baseSpeedCrewBonus: 0.5
