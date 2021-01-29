@@ -23,15 +23,16 @@ public class TextureAtlasSlicer : EditorWindow {
         TextureImporter textureImporter = command.context as TextureImporter;
 
         //valid only if the texture type is 'sprite' or 'advanced'.
-        return textureImporter && textureImporter.textureType == TextureImporterType.Sprite ||
-               textureImporter.textureType == TextureImporterType.Advanced;
+        return textureImporter != null &&
+               (textureImporter.textureType == TextureImporterType.Sprite ||
+               textureImporter.textureType == TextureImporterType.Default);
     }
 
     public TextureImporter importer;
 
     public TextureAtlasSlicer()
     {
-        title = "Texture Atlas Slicer";
+        titleContent.text = "Texture Atlas Slicer";
     }
 
 
