@@ -10,8 +10,12 @@ public class MinigameManager : MonoBehaviour
     public List<GameObject> tiles;
     //public List<Treasure> treasures;
 
-    public int gridWidth;
-    public int gridHeight;
+    public int gridWidth = 10;
+    public int gridHeight = 10;
+
+    public float scale = 10f;
+    public float offsetX = 100f;
+    public float offsetY = 100f;
 
     public int pickDamage = 1;
     public int hitsLeft = 20;
@@ -28,7 +32,7 @@ public class MinigameManager : MonoBehaviour
         //Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RandomTest();
+            //RandomTest();
             GenerateLevel();
         }
     }
