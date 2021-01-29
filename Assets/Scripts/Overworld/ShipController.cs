@@ -56,6 +56,15 @@ public class ShipController : MonoBehaviour
 
     void Update()
     {
+        // Handle Movement
+        float targetSpeed = baseSpeed + crewSpeedBonus * crewSailing;
+        targetSpeed *= (float)sailAmount / (float)Sails.FULL_SAILS;
+
+        _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
+        
+        Vector3 vel = transform.right * _speed;
+        transform.position += vel * Time.deltaTime;
+
         // Handle Left Cannon
         if (_leftCannonCoolDown < 1)
             _leftCannonCoolDown += reloadBaseRate * Time.deltaTime;
@@ -83,6 +92,7 @@ public class ShipController : MonoBehaviour
     {
         hp = maxHP;
         _leftCannonCoolDown = _rightCannonCoolDown = 1;
+        sailAmount = Sails.NO_SAILS;
     }
 
     public void TakeDamage(float amount)
@@ -97,22 +107,10 @@ public class ShipController : MonoBehaviour
 
     public void HandleMovementInput(Vector2 input)
     {
-        bool hasInput = input.sqrMagnitude > 0;
-        float targetSpeed = hasInput ? baseSpeed + crewSpeedBonus * crewSailing : 0;
-        targetSpeed *= (float)sailAmount / (float)Sails.FULL_SAILS;
-
-        _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
-
-        if (hasInput)
-        {
-            float targetAngle = Vector2.SignedAngle(Vector2.right, input);
-            _heading = Mathf.MoveTowardsAngle(_heading, targetAngle, turnSpeed * (0.3f + 0.7f * _speed / baseSpeed) * Time.deltaTime);
-            transform.localRotation = Quaternion.AngleAxis(_heading, Vector3.forward);
-        }
-
-        Vector3 vel = transform.right * _speed;
-
-        transform.position += vel * Time.deltaTime;
+        float targetAngle = Vector2.SignedAngle(Vector2.right, input);
+        _heading = Mathf.MoveTowardsAngle(_heading, targetAngle,
+            turnSpeed * (0.3f + 0.7f * _speed / baseSpeed) * Time.deltaTime);
+        transform.localRotation = Quaternion.AngleAxis(_heading, Vector3.forward);
     }
 
     public void FireLeft()
