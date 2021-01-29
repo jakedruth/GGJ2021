@@ -24,16 +24,16 @@ public class ToggleGroupBetter : ToggleGroup
             toggle.group = this;
             toggle.SetIsOnWithoutNotify(i == defaultToggleIndex);
 
-            toggle.onValueChanged.AddListener((isSelected) => {
+            toggle.onValueChanged.AddListener(isSelected => {
                 if (!isSelected)
                 {
                     return;
                 }
+                
                 Toggle activeToggle = Active();
                 DoOnChange(activeToggle);
                 getIndexOnChange.Invoke(activeToggle.transform.GetSiblingIndex());
             });
-
         }
     }
 

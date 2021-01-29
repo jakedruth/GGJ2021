@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(ShipController))]
 public class PlayerInput : MonoBehaviour
 {
     private ShipController _shipController;
+    private EventSystem _eventSystem;
+
     public SpriteRenderer moveToTarget;
     public Transform fireLeftText;
     public Transform fireRightText;
@@ -15,6 +18,8 @@ public class PlayerInput : MonoBehaviour
     void Awake()
     {
         _shipController = GetComponent<ShipController>();
+        _eventSystem = FindObjectOfType<EventSystem>();
+
         moveToTarget.transform.SetParent(null);
         moveToTarget.enabled = false;
     }
@@ -95,9 +100,12 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            moveToTarget.transform.position = _target;
-            moveToTarget.enabled = _isMovingToTarget = true;
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                moveToTarget.transform.position = _target;
+                moveToTarget.enabled = _isMovingToTarget = true;
+            }
         }
         else
         {

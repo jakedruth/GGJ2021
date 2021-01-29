@@ -344,11 +344,13 @@ MonoBehaviour:
   crewSailing: 1
   crewCannons: 1
   crewRepairs: 1
-  sailAmount: 4
   baseSpeed: 6
   crewSpeedBonus: 0.5
   turnSpeed: 135
   acceleration: 4
+  targetSailAmount: 0
+  changeSailRate: 0
+  crewChangeSailBonus: 0
   cannonBallPrefabName: CannonBall
   reloadBaseRate: 1
   crewReloadBonus: 0.05
@@ -851,8 +853,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2885681407
-  m_fontColor: {r: 1, g: 0, b: 0, a: 0.6745098}
+    rgba: 1358954751
+  m_fontColor: {r: 1, g: 0, b: 0, a: 0.31764707}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -985,8 +987,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2885681407
-  m_fontColor: {r: 1, g: 0, b: 0, a: 0.6745098}
+    rgba: 1358954751
+  m_fontColor: {r: 1, g: 0, b: 0, a: 0.31764707}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

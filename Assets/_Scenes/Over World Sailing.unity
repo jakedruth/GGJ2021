@@ -1859,6 +1859,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0577201ef8c2dbf4b83b1ce3e6920928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  crew:
+    sails:
+      working: 0
+      moving: 0
+      max: 0
+    cannons:
+      working: 0
+      moving: 0
+      max: 0
+    repair:
+      working: 0
+      moving: 0
+      max: 0
 --- !u!4 &904839173
 Transform:
   m_ObjectHideFlags: 0
