@@ -28,14 +28,19 @@ public class ShipController : MonoBehaviour
     [PlusMinus(0, 100)]
     public int crewRepairs;
 
-    [Header("Sail/ Movement Variables")]
-    public Sails sailAmount;
+    [Header("Movement Variables")]
     public float baseSpeed;
     public float crewSpeedBonus;
     private float _speed;
     public float turnSpeed;
     private float _heading;
     public float acceleration;
+
+    [Header("Sail Variables")]
+    public Sails targetSailAmount;
+    private float _sailAmount;
+    public float changeSailRate;
+    public float crewChangeSailBonus;
 
     [Header("Cannon Ball Variables")] 
     public string cannonBallPrefabName;
@@ -56,12 +61,16 @@ public class ShipController : MonoBehaviour
 
     void Update()
     {
-        // Handle Movement
-        float targetSpeed = baseSpeed + crewSpeedBonus * crewSailing;
-        targetSpeed *= (float)sailAmount / (float)Sails.FULL_SAILS;
-
+        // Handle Sails
+        float targetSails = (float) targetSailAmount / (float)Sails.FULL_SAILS;
+        float deltaSails = crewSailing > 0 ? changeSailRate + (crewSailing * crewChangeSailBonus) : 0;
+        _sailAmount = Mathf.MoveTowards(_sailAmount, targetSails, deltaSails * Time.deltaTime);
+        
+        // Handle Speed
+        float targetSpeed = _sailAmount * (baseSpeed + crewSpeedBonus * crewSailing);
         _speed = Mathf.MoveTowards(_speed, targetSpeed, acceleration * Time.deltaTime);
         
+        // Handle Movement
         Vector3 vel = transform.right * _speed;
         transform.position += vel * Time.deltaTime;
 
@@ -92,7 +101,7 @@ public class ShipController : MonoBehaviour
     {
         hp = maxHP;
         _leftCannonCoolDown = _rightCannonCoolDown = 1;
-        sailAmount = Sails.NO_SAILS;
+        targetSailAmount = Sails.NO_SAILS;
     }
 
     public void TakeDamage(float amount)

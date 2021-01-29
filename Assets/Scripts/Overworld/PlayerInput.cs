@@ -66,14 +66,14 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W) || Input.mouseScrollDelta.y > 0)
         {
-            if (_shipController.sailAmount != ShipController.Sails.FULL_SAILS)
-                _shipController.sailAmount++;
+            if (_shipController.targetSailAmount != ShipController.Sails.FULL_SAILS)
+                _shipController.targetSailAmount++;
         }
 
         if (Input.GetKeyDown(KeyCode.S)  || Input.mouseScrollDelta.y < 0)
         {
-            if (_shipController.sailAmount != ShipController.Sails.NO_SAILS)
-                _shipController.sailAmount--;
+            if (_shipController.targetSailAmount != ShipController.Sails.NO_SAILS)
+                _shipController.targetSailAmount--;
         }
 
         #endregion
