@@ -1448,6 +1448,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &459149446 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2189481771019135323, guid: 70979923608c31a4bb48d026fa271103, type: 3}
+  m_PrefabInstance: {fileID: 2189481772381494036}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf1b15dd8ffe704c8250bf37a7180b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &462033437
 GameObject:
   m_ObjectHideFlags: 0
@@ -3436,8 +3447,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68ff5d4ce242a54a89a560a863a032e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  distanceAheadOfTargetParam: 2
+  target: {fileID: 459149446}
+  distanceAheadOfTargetParam: 1.5
   offset: {x: 6, y: 0, z: -10}
   smoothing: 1
   zoomLevel: 0
