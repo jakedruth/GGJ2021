@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MinigameManager : MonoBehaviour
 {
+    public enum ToolType
+    {
+        Pickaxe,
+        Hammer
+    }
     public GameObject tileTemplate;
 
     public GameObject grid;
@@ -17,6 +22,7 @@ public class MinigameManager : MonoBehaviour
     public float offsetX = 100f;
     public float offsetY = 100f;
 
+    public ToolType tool = ToolType.Pickaxe;
     public int pickDamage = 1;
     public int hitsLeft = 20;
 
