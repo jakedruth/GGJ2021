@@ -8,15 +8,7 @@ public class CameraController : MonoBehaviour
     public float distanceAheadOfTargetParam;
     public Vector3 offset;
     public float smoothing;
-
-    public float zoomLevel;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -31,6 +23,8 @@ public class CameraController : MonoBehaviour
 
         pos.z = offset.z;
         transform.position = pos;
+
+
     }
 
     public float Damp(float a, float b, float lambda, float dt)
