@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class MinigameManager : MonoBehaviour
@@ -9,36 +10,44 @@ public class MinigameManager : MonoBehaviour
         Hammer,
         OneDamage
     }
-    public GameObject grid;
 
-    public GameObject tileTemplate;
-    public GameObject tileBGTemplate;
-    public GameObject tileBorderTemplate;
+    GameObject levelGrid;
 
-    public List<GameObject> tiles;
-    public List<GameObject> tilesBG;
-    public List<GameObject> tilesBorder;
+    [Header("Tile Variables")]
+    public string minigameTilePrefabName;
+    public string minigameTileBGPrefabName;
+    public string minigameTileBorderPrefabName;
+
+    public List<MinigameTile> tiles;
     //public List<Treasure> treasures;
+
+    [Header("Perlin Noise Adjustment")]
+    public int gridWidth = 10;
+    public int gridHeight = 10;
+
+    public float scale = 4f;
 
     public float grassWeighted = 1f;
     public float bushWeighted = 1f;
     public float rockWeighted = 1f;
 
-    public int gridWidth = 10;
-    public int gridHeight = 10;
+    private float offsetX = 100f;
+    private float offsetY = 100f;
 
-    public float scale = 10f;
-    public float offsetX = 100f;
-    public float offsetY = 100f;
-
+    [Header("Tool Variables")]
     public ToolType tool = ToolType.Pickaxe;
-    public int pickDamage = 1;
-    public int hitsLeft = 20;
+    public int damageMultiplier = 1;
+
+    [Header("Island Variables")]
+    public List<Sprite> fracturesList;
+    public Image currentFracture;
+    public int hitsTotal = 20;
+    private int hitsLeft = 20;
 
 
     void Start()
     {
-        grid = new GameObject("Grid");
+        levelGrid = new GameObject("Level Grid");
         GenerateLevel();
     }
 
@@ -47,6 +56,35 @@ public class MinigameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GenerateLevel();
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            damageIsland(1);
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            damageIsland(-1);
+        }
+    }
+    public void damageIsland(int damage)
+    {
+        hitsLeft -= damage;
+        if ((hitsLeft >= 0) && (hitsLeft < hitsTotal))
+        {
+            currentFracture.enabled = true;
+
+            int displayIndex = Mathf.FloorToInt(((float)hitsLeft / (float)hitsTotal) * fracturesList.Count);
+            displayIndex = (fracturesList.Count - 1) - displayIndex;
+
+            currentFracture.sprite = fracturesList[displayIndex];
+        }
+        else if (hitsLeft == hitsTotal)
+        {
+            currentFracture.enabled = false;
+        }
+        else
+        {
+            hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
         }
     }
     public void SwitchTools(int _tool)
@@ -84,23 +122,23 @@ public class MinigameManager : MonoBehaviour
     }
     void GenerateLevel()
     {
+        //Reset fracture bar
+        hitsLeft = hitsTotal;
+
         //Perlin noise map randomization
         offsetX = Random.Range(0f, 99999f);
         offsetY = Random.Range(0f, 99999f);
 
         //Clear the grid of all tiles
-        foreach (GameObject tile in tiles)
+        for (int i = 0; i < levelGrid.transform.childCount; i++)
         {
-            Destroy(tile);
+            Destroy(levelGrid.transform.GetChild(i).gameObject);
         }
         tiles.Clear();
-
-        //Clear the grid of all tiles
-        foreach (GameObject tile in tilesBG)
-        {
-            Destroy(tile);
-        }
-        tilesBG.Clear();
+        
+        MinigameTile resourceTile = Resources.Load<MinigameTile>($"Prefabs/{minigameTilePrefabName}");
+        MinigameTileBorder resourceTileBorder = Resources.Load<MinigameTileBorder>($"Prefabs/{minigameTileBorderPrefabName}");
+        GameObject resourceTileBG = Resources.Load<GameObject>($"Prefabs/{minigameTileBGPrefabName}");
 
         //Generate a new grid of a given size, and make the parent 'grid' for each tile
         for (int y = 0; y < gridHeight; y++)
@@ -110,32 +148,24 @@ public class MinigameManager : MonoBehaviour
                 if (!isBorderTile(x, y))
                 {
                     //Destructable tile
-                    GameObject tempTile = Instantiate<GameObject>(tileTemplate);
-                    tempTile.transform.position = new Vector3(x, y);
+                    MinigameTile tempTile = Instantiate(resourceTile, new Vector3(x, y), Quaternion.identity);
                     tiles.Add(tempTile);
-                    tempTile.transform.SetParent(grid.transform);
+                    tempTile.transform.SetParent(levelGrid.transform);
 
                     //Assign the depth based on perlin noise
-                    MinigameTile tile = tempTile.GetComponent<MinigameTile>();
-                    tile.AssignSpriteBasedOnMaxHealth(CalculateTile(x, y));
+                    tempTile.AssignSpriteBasedOnMaxHealth(CalculateTile(x, y));
                     
-
                     //Background tile
-                    GameObject tempTileBG = Instantiate<GameObject>(tileBGTemplate);
-                    tempTileBG.transform.position = new Vector3(x, y);
-                    tilesBG.Add(tempTileBG);
-                    tempTileBG.transform.SetParent(grid.transform);
+                    GameObject tempTileBG = Instantiate(resourceTileBG, new Vector3(x, y), Quaternion.identity);
+                    tempTileBG.transform.SetParent(levelGrid.transform);
                 }
                 else
                 {
                     //Border tile
-                    GameObject tempTileBorder = Instantiate<GameObject>(tileBorderTemplate);
-                    tempTileBorder.transform.position = new Vector3(x, y);
-                    tilesBG.Add(tempTileBorder);
-                    tempTileBorder.transform.SetParent(grid.transform);
+                    MinigameTileBorder tempTileBorder = Instantiate(resourceTileBorder, new Vector3(x, y), Quaternion.identity);
+                    tempTileBorder.transform.SetParent(levelGrid.transform);
 
-                    MinigameTileBorder border = tempTileBorder.GetComponent<MinigameTileBorder>();
-                    border.AssignSpriteBasedOnNeighbors(GetDirection(x, y));
+                    tempTileBorder.AssignSpriteBasedOnNeighbors(GetDirection(x, y));
                 }
             }
         }
