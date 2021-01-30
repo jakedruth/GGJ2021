@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class OverWorldHUD : MonoBehaviour
@@ -34,6 +35,18 @@ public class OverWorldHUD : MonoBehaviour
     public Button repairsRemoveButton;
     public Button repairsAddButton;
 
+    [Header("Pop-up Notifications")]
+    public RectTransform popupHolder;
+    public TMP_Text popupText;
+    public Button popupButton;
+    public float popupTime;
+    private bool _displayPopUp;
+    private bool _isAnimating;
+    private Vector3 _popupStartingPos;
+    private float _deltaY;
+
+    private float _animParam;
+
     void Awake()
     {
         if (instance != null)
@@ -44,6 +57,9 @@ public class OverWorldHUD : MonoBehaviour
 
         instance = this;
         _sailsTargetMaxX = sailsTarget.localPosition.x;
+
+        _popupStartingPos = popupHolder.transform.position;
+        _deltaY = Mathf.Abs(_popupStartingPos.y);
     }
 
     void Start()
@@ -61,6 +77,28 @@ public class OverWorldHUD : MonoBehaviour
         // Repairs
         repairsRemoveButton.onClick.AddListener(() => { player.RemoveCrewMemberFromStation(StationType.REPAIRS); });
         repairsAddButton.onClick.AddListener(() => { player.AddCrewMemberToStation(StationType.REPAIRS); });
+    }
+
+    void Update()
+    {
+        if (_displayPopUp && _animParam < 1)
+        {
+            _isAnimating = true;
+            _animParam += Time.deltaTime / popupTime;
+        }
+        else if (!_displayPopUp && _animParam > 0)
+        {
+            _isAnimating = true;
+            _animParam -= Time.deltaTime / popupTime;
+        }
+        else
+            _isAnimating = false;
+
+        if (_isAnimating)
+        {
+            float t = (_displayPopUp) ? Easing.Spring(_animParam) : Easing.Cubic.In(_animParam);
+            popupHolder.transform.position = _popupStartingPos + Vector3.up * _deltaY * t;
+        }
     }
 
     public void SetHP(float value, float max)
@@ -131,5 +169,51 @@ public class OverWorldHUD : MonoBehaviour
         sailsAddButton.interactable = available > 0 && sails + sailsMoving != sailsMax;
         cannonsAddButton.interactable = available > 0 && cannons + cannonsMoving != cannonsMax;
         repairsAddButton.interactable = available > 0 && repairs + repairsMoving != repairsMax;
+    }
+
+    public bool ShowPopUp(string text, bool showButton, string buttonText = "OK", bool buttonInteractable = true, 
+        UnityAction onButtonClickedAction = null)
+    {
+        if (_isAnimating || _displayPopUp)
+            return false;
+
+        StopAllCoroutines();
+
+        popupText.text = text;
+        popupButton.gameObject.SetActive(showButton);
+        popupButton.GetComponentInChildren<TMP_Text>().text = buttonText;
+        popupButton.interactable = buttonInteractable;
+        if (onButtonClickedAction != null)
+            popupButton.onClick.AddListener(() =>
+            {
+                if (!instance._isAnimating)
+                    onButtonClickedAction.Invoke();
+            });
+
+        _displayPopUp = true;
+
+        return true;
+    }
+
+    public void HidePopUp()
+    {
+        _displayPopUp = false;
+        popupButton.onClick.RemoveAllListeners();
+    }
+
+    public void ShowPopUpForDuration(float duration, string text, bool showButton, string buttonText = "OK", bool buttonInteractable = true, 
+        UnityAction onButtonClickedAction = null)
+    {
+        Debug.Log("Here");
+        if (ShowPopUp(text, showButton, buttonText, buttonInteractable, onButtonClickedAction))
+        {
+            StartCoroutine(HidPopUpAfterDuration(duration));
+        }
+    }
+
+    private IEnumerator HidPopUpAfterDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        HidePopUp();
     }
 }

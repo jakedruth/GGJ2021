@@ -94,36 +94,53 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             shipController.FireLeft();
+            if (shipController.crew.cannons.working == 0)
+                OverWorldHUD.instance.ShowPopUpForDuration(3f,
+                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
+                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             shipController.FireRight();
+            if (shipController.crew.cannons.working == 0)
+                OverWorldHUD.instance.ShowPopUpForDuration(3f,
+                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
+                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 pos = transform.position;
-
-            Vector3 delta = mousePos - pos;
-            Vector3 dir = delta.normalized;
-
-            float angle = Vector2.SignedAngle(transform.right, dir);
-           
-            // TODO: Make 30 a public variable, and maybe a setting a player can fiddle with
-            if (Mathf.Abs(angle) <= 30)
+            if (shipController.crew.cannons.working == 0)
             {
-                shipController.FireLeft();
-                shipController.FireRight();
+                OverWorldHUD.instance.ShowPopUpForDuration(3f,
+                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
+                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
             }
             else
             {
-                float side = Mathf.Sign(angle);
-                if (side > 0)
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 pos = transform.position;
+
+                Vector3 delta = mousePos - pos;
+                Vector3 dir = delta.normalized;
+
+                float angle = Vector2.SignedAngle(transform.right, dir);
+
+                // TODO: Make 30 a public variable, and maybe a setting a player can fiddle with
+                if (Mathf.Abs(angle) <= 30)
+                {
                     shipController.FireLeft();
-                else 
                     shipController.FireRight();
+                }
+                else
+                {
+                    float side = Mathf.Sign(angle);
+                    if (side > 0)
+                        shipController.FireLeft();
+                    else
+                        shipController.FireRight();
+                }
             }
         }
 
@@ -134,13 +151,23 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W) || Input.mouseScrollDelta.y > 0)
         {
             if (shipController.targetSailAmount != ShipController.Sails.FULL_SAILS)
+            {
                 shipController.targetSailAmount++;
+                if (shipController.crew.sails.working == 0)
+                    OverWorldHUD.instance.ShowPopUpForDuration(2f,
+                        "You need to have crew members on the Sails Station in order to change the sails", false);
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.S)  || Input.mouseScrollDelta.y < 0)
+        if (Input.GetKeyDown(KeyCode.S) || Input.mouseScrollDelta.y < 0)
         {
             if (shipController.targetSailAmount != ShipController.Sails.NO_SAILS)
+            {
                 shipController.targetSailAmount--;
+                if (shipController.crew.sails.working == 0)
+                    OverWorldHUD.instance.ShowPopUpForDuration(2f,
+                        "You need to have crew members on the Sails Station in order to change the sails", false);
+            }
         }
 
         // Update HUD
@@ -188,7 +215,6 @@ public class PlayerInput : MonoBehaviour
         }
 
         #endregion
-
 
         fireLeftText.rotation = Quaternion.identity;
         fireRightText.rotation = Quaternion.identity;

@@ -6,10 +6,19 @@ public class Island : MonoBehaviour
 {
     public float difficultyLevel;
 
-    public void Start()
+    void Start()
     {
 
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            OverWorldHUD.instance.ShowPopUp("Press space bar to land on this island", true, "Land", true, OnButtonClickedAction);
+    }
 
+    private void OnButtonClickedAction()
+    {
+        OverWorldHUD.instance.HidePopUp();
+    }
 }

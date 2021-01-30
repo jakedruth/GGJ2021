@@ -207,4 +207,10 @@ public class Easing
 			return Out(k*2f - 1f)*0.5f + 0.5f;
 		}		
 	};
+
+    public static float Spring (float k)
+    {
+        k = Mathf.Clamp01(k);
+        return (Mathf.Sin(k * Mathf.PI * (.2f + 2.5f * k * k * k)) * Mathf.Pow(1f - k, 2.2f) + k) * (1f + (1.2f * (1f - k)));
+    }
 }

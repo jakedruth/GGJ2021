@@ -9,7 +9,7 @@ public class Cannonball : MonoBehaviour
     public AnimationCurve scaleOverTime;
     private float _totalLifeTime;
     private float _lifeTime;
-    private Transform _owner;
+    private ShipController _owner;
     private Vector3 _inheritVel;
 
     void Start()
@@ -32,10 +32,11 @@ public class Cannonball : MonoBehaviour
         transform.position += (_inheritVel + transform.right * moveSpeed) * Time.deltaTime;
     }
 
-    public void InitCannonBall(Transform owner, Vector3 inheritVel)
+    public void InitCannonBall(ShipController owner)
     {
         _owner = owner;
-        _inheritVel = inheritVel;
+        _inheritVel = _owner.transform.right * _owner.speed;
+        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), _owner.GetComponent<CompositeCollider2D>());
     }
 
 

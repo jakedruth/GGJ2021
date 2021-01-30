@@ -197,7 +197,7 @@ public class ShipController : MonoBehaviour
     {
         Cannonball resource = Resources.Load<Cannonball>($"Prefabs/{cannonBallPrefabName}");
         Cannonball cb = Instantiate(resource, position, rotation);
-        cb.InitCannonBall(transform, transform.right * speed);
+        cb.InitCannonBall(this);
     }
 
     private static readonly System.Random RNG = new System.Random();
