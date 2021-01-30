@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class MinigameTileBorder : MonoBehaviour
 {
-    public enum Direction
-    {
-        TopLeft,
-        Top,
-        TopRight,
-        Left,
-        Right,
-        BottomLeft,
-        Bottom,
-        BottomRight,
-    }
-
     MinigameManager minigameManager;
 
     public List<Sprite> tileSpriteList;

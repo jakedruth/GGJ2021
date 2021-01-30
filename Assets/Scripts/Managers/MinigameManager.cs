@@ -6,17 +6,23 @@ public class MinigameManager : MonoBehaviour
     public enum ToolType
     {
         Pickaxe,
-        Hammer
+        Hammer,
+        OneDamage
     }
+    public GameObject grid;
+
     public GameObject tileTemplate;
     public GameObject tileBGTemplate;
     public GameObject tileBorderTemplate;
 
-    public GameObject grid;
     public List<GameObject> tiles;
     public List<GameObject> tilesBG;
     public List<GameObject> tilesBorder;
     //public List<Treasure> treasures;
+
+    public float grassWeighted = 1f;
+    public float bushWeighted = 1f;
+    public float rockWeighted = 1f;
 
     public int gridWidth = 10;
     public int gridHeight = 10;
@@ -38,7 +44,6 @@ public class MinigameManager : MonoBehaviour
 
     void Update()
     {
-        //Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GenerateLevel();
@@ -48,8 +53,41 @@ public class MinigameManager : MonoBehaviour
     {
         tool = (ToolType)_tool;
     }
+
+    int CalculateTile(int x, int y)
+    {
+        float xCoord = (float)x / gridWidth * scale + offsetX;
+        float yCoord = (float)y / gridHeight * scale + offsetY;
+
+        float sample = Mathf.PerlinNoise(xCoord, yCoord);
+
+        //Calculate weights of spawning different strength tiles
+        float totalWeight = grassWeighted + bushWeighted + rockWeighted;
+        float grassThreshold = grassWeighted / totalWeight;
+        float bushThreshold = (bushWeighted / totalWeight) + grassThreshold;
+
+        int depth = 0;
+        if (sample < grassThreshold)
+        {
+            depth = 3;
+        }
+        else if (sample < bushThreshold)
+        {
+            depth = 6;
+        }
+        else
+        {
+            depth = 10;
+        }
+
+        return depth;
+    }
     void GenerateLevel()
     {
+        //Perlin noise map randomization
+        offsetX = Random.Range(0f, 99999f);
+        offsetY = Random.Range(0f, 99999f);
+
         //Clear the grid of all tiles
         foreach (GameObject tile in tiles)
         {
@@ -76,6 +114,11 @@ public class MinigameManager : MonoBehaviour
                     tempTile.transform.position = new Vector3(x, y);
                     tiles.Add(tempTile);
                     tempTile.transform.SetParent(grid.transform);
+
+                    //Assign the depth based on perlin noise
+                    MinigameTile tile = tempTile.GetComponent<MinigameTile>();
+                    tile.AssignSpriteBasedOnMaxHealth(CalculateTile(x, y));
+                    
 
                     //Background tile
                     GameObject tempTileBG = Instantiate<GameObject>(tileBGTemplate);

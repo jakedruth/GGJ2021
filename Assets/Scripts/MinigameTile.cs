@@ -7,24 +7,31 @@ public class MinigameTile : MonoBehaviour
 {
     MinigameManager minigameManager;
 
-    public List<Sprite> tileSpriteList;
+    public List<Sprite> tileBaseSpriteList;
+    public List<Sprite> tileFloraSpriteList;
+    public List<Sprite> tileRockSpriteList;
     public List<Sprite> crackSpriteList;
-    public SpriteRenderer currentTileSprite;
+
+    public SpriteRenderer baseTileSprite;
+    public SpriteRenderer topTileSprite;
     public SpriteRenderer currentCrackSprite;
-    public int hitsMax = 3;
+
+    public int hitsToBreak = 3;
     public int hitsRemaining;
 
-    void Start()
+    void Awake()
     {
         minigameManager = GameObject.Find("Minigame Manager").GetComponent<MinigameManager>();
 
-        hitsRemaining = hitsMax;
+        hitsRemaining = hitsToBreak;
 
         //Assign references to the current tile sprite and crack sprite
-        currentTileSprite = transform.GetComponent<SpriteRenderer>();
-        currentCrackSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        baseTileSprite = transform.GetComponent<SpriteRenderer>();
+        topTileSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        currentCrackSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
 
         //Assign the initial sprite
+        AssignSpriteBasedOnMaxHealth(hitsToBreak);
     }
     
     void OnMouseDown()
@@ -36,6 +43,9 @@ public class MinigameTile : MonoBehaviour
                 break;
             case MinigameManager.ToolType.Hammer:
                 UseHammer();
+                break;
+            case MinigameManager.ToolType.OneDamage:
+                Dig(1);
                 break;
             default:
                 break;
@@ -109,26 +119,44 @@ public class MinigameTile : MonoBehaviour
             }
         }
     }
-
     void Dig(int amount)
     {
         hitsRemaining -= amount;
-        if (hitsRemaining < 0)
-            Destroy(gameObject);
-
-        AssignSpriteBasedOnDepth();
-    }
-
-    void AssignSpriteBasedOnDepth()
-    {
-        if (hitsRemaining < hitsMax)
+        if (hitsRemaining <= 0)
         {
-            int displayIndex = Mathf.RoundToInt(((float)hitsRemaining / (float)hitsMax) * crackSpriteList.Count);
+            Destroy(gameObject);
+        }
+        else
+        {
+            AssignCrackedSpriteBasedOnDepth();
+        }
+    }
+    void AssignCrackedSpriteBasedOnDepth()
+    {
+        if (hitsRemaining < hitsToBreak)
+        {
+            int displayIndex = Mathf.FloorToInt(((float)hitsRemaining / (float)hitsToBreak) * crackSpriteList.Count);
             displayIndex = (crackSpriteList.Count - 1) - displayIndex;
-            if (displayIndex >= crackSpriteList.Count)
-                displayIndex = crackSpriteList.Count - 1;
+            //if (displayIndex >= crackSpriteList.Count)
+            //    displayIndex = crackSpriteList.Count - 1;
 
             currentCrackSprite.sprite = crackSpriteList[displayIndex];
+        }
+    }
+    public void AssignSpriteBasedOnMaxHealth(int max)
+    {
+        hitsToBreak = max;
+
+        baseTileSprite.sprite = tileBaseSpriteList[Random.Range(0, tileBaseSpriteList.Count)];
+        topTileSprite.sprite = null;
+
+        if (max > 6)
+        {
+            topTileSprite.sprite = tileRockSpriteList[Random.Range(0, tileRockSpriteList.Count)];
+        }
+        else if (max > 3)
+        {
+            topTileSprite.sprite = tileFloraSpriteList[Random.Range(0, tileFloraSpriteList.Count)];
         }
     }
 }
