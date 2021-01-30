@@ -21,4 +21,17 @@ public class Island : MonoBehaviour
     {
         OverWorldHUD.instance.HidePopUp();
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+            OverWorldHUD.instance.ShowPopUp("Press space bar to land on this island", true, "Land", true, OnButtonClickedAction);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+            OverWorldHUD.instance.HidePopUp();
+    }
+
 }
