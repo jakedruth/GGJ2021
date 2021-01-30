@@ -40,9 +40,11 @@ public class MinigameTile : MonoBehaviour
         {
             case MinigameManager.ToolType.Pickaxe:
                 UsePickaxe();
+                minigameManager.damageIsland(1);
                 break;
             case MinigameManager.ToolType.Hammer:
                 UseHammer();
+                minigameManager.damageIsland(2);
                 break;
             case MinigameManager.ToolType.OneDamage:
                 Dig(1);
@@ -54,7 +56,7 @@ public class MinigameTile : MonoBehaviour
     }
     void UsePickaxe()
     {
-        Dig(minigameManager.pickDamage * 3);
+        Dig(minigameManager.damageMultiplier * 3);
         List<Collider2D> neighbors = new List<Collider2D>();
         //Add the four tiles to the list, in a plus sign to be destroyed
         neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right));
@@ -70,14 +72,14 @@ public class MinigameTile : MonoBehaviour
                 MinigameTile n = col.GetComponent<MinigameTile>();
                 if (n != null)
                 {
-                    n.Dig(minigameManager.pickDamage);
+                    n.Dig(minigameManager.damageMultiplier);
                 }
             }
         }
     }
     void UseHammer()
     {
-        Dig(minigameManager.pickDamage * 3);
+        Dig(minigameManager.damageMultiplier * 3);
         List<Collider2D> neighbors = new List<Collider2D>();
 
         //Add the four adjacent tiles to the list
@@ -94,7 +96,7 @@ public class MinigameTile : MonoBehaviour
                 MinigameTile n = col.GetComponent<MinigameTile>();
                 if (n != null)
                 {
-                    n.Dig(minigameManager.pickDamage * 2);
+                    n.Dig(minigameManager.damageMultiplier * 2);
                 }
             }
         }
@@ -114,7 +116,7 @@ public class MinigameTile : MonoBehaviour
                 MinigameTile n = col.GetComponent<MinigameTile>();
                 if (n != null)
                 {
-                    n.Dig(minigameManager.pickDamage);
+                    n.Dig(minigameManager.damageMultiplier);
                 }
             }
         }
@@ -137,15 +139,13 @@ public class MinigameTile : MonoBehaviour
         {
             int displayIndex = Mathf.FloorToInt(((float)hitsRemaining / (float)hitsToBreak) * crackSpriteList.Count);
             displayIndex = (crackSpriteList.Count - 1) - displayIndex;
-            //if (displayIndex >= crackSpriteList.Count)
-            //    displayIndex = crackSpriteList.Count - 1;
 
             currentCrackSprite.sprite = crackSpriteList[displayIndex];
         }
     }
     public void AssignSpriteBasedOnMaxHealth(int max)
     {
-        hitsToBreak = max;
+        hitsRemaining = hitsToBreak = max;
 
         baseTileSprite.sprite = tileBaseSpriteList[Random.Range(0, tileBaseSpriteList.Count)];
         topTileSprite.sprite = null;
