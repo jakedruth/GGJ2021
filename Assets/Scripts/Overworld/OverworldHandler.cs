@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OverWorldHandler : MonoBehaviour
 {
@@ -21,6 +22,28 @@ public class OverWorldHandler : MonoBehaviour
         //_hud.UpdateUI();
 
         // TODO: Probs the day night cycle shit
+    }
+
+    [ContextMenu("Land at port")]
+    public void LandAtPort()
+    {
+        SceneManager.LoadScene("HomePortMenu", LoadSceneMode.Additive);
+        Time.timeScale = 0;
+    }
+
+    // TODO: Eventually make an island class for the over world
+    public void LandOnIsland(object island)
+    {
+
+    }
+
+    public void LeaveIsland(object island)
+    {
+        Time.timeScale = 1;
+        if (island is HomePortHandler port)
+        {
+            SceneManager.UnloadSceneAsync("HomePortMenu");
+        }
     }
 }
 

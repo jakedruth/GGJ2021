@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class HomePortHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnSetSail()
     {
-        
+        OverWorldHandler owh = FindObjectOfType<OverWorldHandler>();
+        if (owh != null)
+            owh.LeaveIsland(this);
+        else 
+            Debug.LogError("The over world was never found");
     }
 }

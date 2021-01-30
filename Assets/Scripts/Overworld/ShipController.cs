@@ -31,7 +31,7 @@ public class ShipController : MonoBehaviour
     public float turnSpeed;
     private float _heading;
     public float acceleration;
-    private Vector3 _driftingVel = Vector3.up * 10;
+    private Vector3 _driftingVel;
 
     [Header("Sail Variables")]
     public Sails targetSailAmount;
@@ -109,8 +109,6 @@ public class ShipController : MonoBehaviour
     {
         hp = maxHP;
         leftCannonCoolDown = rightCannonCoolDown = 1;
-        //crew.sails.max = crew.cannons.max = crew.repair.max = 2;
-        crew.sails.working = crew.cannons.working = crew.repair.working = 1;
         targetSailAmount = Sails.NO_SAILS;
     }
 

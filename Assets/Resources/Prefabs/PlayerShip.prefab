@@ -399,18 +399,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   crew:
-    members: 3
+    members: 4
     moveSpeed: 0.5
     sails:
-      working: 0
+      working: 1
       onRoute: 0
       max: 2
     cannons:
-      working: 0
+      working: 1
       onRoute: 0
       max: 2
     repair:
-      working: 0
+      working: 1
       onRoute: 0
       max: 2
   baseSpeed: 6
@@ -1222,9 +1222,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 366721837
+  m_SortingLayer: 3
+  m_SortingOrder: 5
   m_Sprite: {fileID: 5532477561959472603, guid: 362326ec708661b4682d8f4452f3b2ce, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 0.36862746}
   m_FlipX: 0
@@ -1334,9 +1334,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 366721837
+  m_SortingLayer: 3
+  m_SortingOrder: 5
   m_Sprite: {fileID: 5532477561959472603, guid: 362326ec708661b4682d8f4452f3b2ce, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 0.36862746}
   m_FlipX: 0
