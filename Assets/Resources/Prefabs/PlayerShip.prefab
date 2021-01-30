@@ -255,7 +255,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2189481771019135322}
-  - component: {fileID: 2611069537573384193}
+  - component: {fileID: 459149447}
+  - component: {fileID: 4186501189321011178}
   - component: {fileID: 2189481771019135300}
   - component: {fileID: 2189481771019135323}
   m_Layer: 0
@@ -283,8 +284,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &2611069537573384193
-BoxCollider2D:
+--- !u!50 &459149447
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2189481771019135321}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!66 &4186501189321011178
+CompositeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -297,18 +319,52 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 3.4, y: 1.25}
+  m_GeometryType: 1
+  m_GenerationType: 0
   m_EdgeRadius: 0
+  m_ColliderPaths:
+  - m_Collider: {fileID: 2974187200197736380}
+    m_ColliderPaths:
+    - - X: 4062500
+        Y: 6250001
+      - X: 10625001
+        Y: 4687502
+      - X: 16875002
+        Y: -70998
+      - X: 10625001
+        Y: -4687499
+      - X: 4062501
+        Y: -6250000
+      - X: -10937500
+        Y: -6250002
+      - X: -15000002
+        Y: -4375002
+      - X: -16250002
+        Y: -2812502
+      - X: -16562502
+        Y: -1
+      - X: -16250002
+        Y: 2812498
+      - X: -15000002
+        Y: 4374999
+      - X: -10625002
+        Y: 6249999
+  m_CompositePaths:
+    m_Paths:
+    - - {x: -1.0937551, y: -0.6249979}
+      - {x: 0.4062527, y: -0.6249993}
+      - {x: 1.0625042, y: -0.4687468}
+      - {x: 1.6874672, y: -0.0070747}
+      - {x: 1.062495, y: 0.4687513}
+      - {x: 0.4062468, y: 0.6250001}
+      - {x: -1.062505, y: 0.6249979}
+      - {x: -1.5000042, y: 0.437495}
+      - {x: -1.6250011, y: 0.2812425}
+      - {x: -1.6562499, y: -0.0000029}
+      - {x: -1.6249956, y: -0.281256}
+      - {x: -1.4999948, y: -0.4375028}
+  m_VertexDistance: 0.0005
+  m_OffsetDistance: 0.00005
 --- !u!114 &2189481771019135300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,14 +418,14 @@ MonoBehaviour:
   turnSpeed: 135
   acceleration: 4
   targetSailAmount: 0
-  changeSailRate: 0.4
+  changeSailRate: 0.3
   changeSailRateCrewBonus: 0.1
   cannonBallPrefabName: CannonBall
   reloadBaseRate: 1
   reloadBaseRateCrewBonus: 0.1
   leftCannonFirePoint: {fileID: 301293406}
   rightCannonFirePoint: {fileID: 7843527231198068910}
-  crewRepairRate: 0.25
+  crewRepairRate: 1
 --- !u!1 &2189481771447178214
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,6 +436,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2189481771447178215}
   - component: {fileID: 2189481771447178208}
+  - component: {fileID: 2974187200197736380}
   m_Layer: 0
   m_Name: hullSmall (1)
   m_TagString: Untagged
@@ -452,6 +509,43 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!60 &2974187200197736380
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2189481771447178214}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 1
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.25, y: 3.375}
+    newSize: {x: 1.25, y: 3.375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.625, y: -0.40625}
+      - {x: 0.46875, y: -1.0625}
+      - {x: -0.0071000457, y: -1.6875}
+      - {x: -0.46875, y: -1.0625}
+      - {x: -0.625, y: -0.40625}
+      - {x: -0.625, y: 1.09375}
+      - {x: -0.4375, y: 1.5}
+      - {x: -0.28125, y: 1.625}
+      - {x: 0, y: 1.65625}
+      - {x: 0.28125, y: 1.625}
+      - {x: 0.4375, y: 1.5}
+      - {x: 0.625, y: 1.0625}
 --- !u!1 &2189481772383229230
 GameObject:
   m_ObjectHideFlags: 0

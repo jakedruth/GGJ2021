@@ -31,6 +31,7 @@ public class ShipController : MonoBehaviour
     public float turnSpeed;
     private float _heading;
     public float acceleration;
+    private Vector3 _driftingVel = Vector3.up * 10;
 
     [Header("Sail Variables")]
     public Sails targetSailAmount;
@@ -68,7 +69,10 @@ public class ShipController : MonoBehaviour
         speed = Mathf.MoveTowards(speed, targetSpeed, acceleration * Time.deltaTime);
         
         // Handle Movement
-        Vector3 vel = transform.right * speed;
+        if (_driftingVel.sqrMagnitude >= 0.000001f) 
+            _driftingVel *= 0.9f;
+        
+        Vector3 vel = transform.right * speed + _driftingVel;
         transform.position += vel * Time.deltaTime;
 
         // Handle Left Cannon
@@ -209,5 +213,29 @@ public class ShipController : MonoBehaviour
             list[k] = list[n];  
             list[n] = value;  
         }  
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag != "Cannonball")
+        {
+            float speedParam = speed / baseSpeed;
+            ContactPoint2D[] contacts = new ContactPoint2D[collision.contactCount];
+            collision.GetContacts(contacts);
+            Vector2 point = Vector2.zero;
+            Vector2 normal = Vector2.zero;
+            
+            foreach (ContactPoint2D contact in contacts)
+            {
+                point += contact.point;
+                normal += contact.normal;
+            }
+
+            Vector3 direction = normal.normalized;
+            _driftingVel += direction * speedParam * 30f;
+            speed = 0;
+
+            TakeDamage(20 * speedParam);
+        }
     }
 }
