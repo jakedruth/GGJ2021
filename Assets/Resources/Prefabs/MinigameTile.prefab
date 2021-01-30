@@ -205,7 +205,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37ae271fb7b0fd4e81242e3aa8299fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileSpriteList: []
+  tileSpriteList:
+  - {fileID: 2015519337835680735, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: 5983242650317666683, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: 311178627824484905, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -4208002562300046653, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -925454067093563622, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -3136081920157631741, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -3787664441835126271, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -6994320310776203903, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
+  - {fileID: -8755824688613974827, guid: ee1af3534c05d2c40b5f502f9a596f1a, type: 3}
   crackSpriteList:
   - {fileID: -8948533112959618432, guid: 780838eef85c914459819b330271ccdc, type: 3}
   - {fileID: -1752831634495487814, guid: 780838eef85c914459819b330271ccdc, type: 3}
