@@ -59,6 +59,9 @@ public class ShipController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.isPaused)
+            return;
+
         // Handle Sails
         float targetSails = (float) targetSailAmount / (float)Sails.FULL_SAILS;
         float deltaSails = crew.sails.working > 0 ? changeSailRate + (crew.sails.working * changeSailRateCrewBonus) : 0;
@@ -155,6 +158,9 @@ public class ShipController : MonoBehaviour
 
     private bool FireCannons(Transform cannons)
     {
+        if (GameManager.instance.isPaused)
+            return false;
+
         if (crew.cannons.working <= 0)
             return false;
 

@@ -37,14 +37,13 @@ public class OverWorldHUD : MonoBehaviour
 
     [Header("Pop-up Notifications")]
     public RectTransform popupHolder;
+    public RectTransform popupHidden;
+    public RectTransform popupDisplayed;
     public TMP_Text popupText;
     public Button popupButton;
     public float popupTime;
     private bool _displayPopUp;
     private bool _isAnimating;
-    private Vector3 _popupStartingPos;
-    private float _deltaY;
-
     private float _animParam;
 
     void Awake()
@@ -57,9 +56,6 @@ public class OverWorldHUD : MonoBehaviour
 
         instance = this;
         _sailsTargetMaxX = sailsTarget.localPosition.x;
-
-        _popupStartingPos = popupHolder.transform.position;
-        _deltaY = Mathf.Abs(_popupStartingPos.y);
     }
 
     void Start()
@@ -84,12 +80,12 @@ public class OverWorldHUD : MonoBehaviour
         if (_displayPopUp && _animParam < 1)
         {
             _isAnimating = true;
-            _animParam += Time.deltaTime / popupTime;
+            _animParam += Time.unscaledDeltaTime / popupTime;
         }
         else if (!_displayPopUp && _animParam > 0)
         {
             _isAnimating = true;
-            _animParam -= Time.deltaTime / popupTime;
+            _animParam -= Time.unscaledDeltaTime / popupTime;
         }
         else
             _isAnimating = false;
@@ -97,7 +93,7 @@ public class OverWorldHUD : MonoBehaviour
         if (_isAnimating)
         {
             float t = (_displayPopUp) ? Easing.Spring(_animParam) : Easing.Cubic.In(_animParam);
-            popupHolder.transform.position = _popupStartingPos + Vector3.up * _deltaY * t;
+            popupHolder.transform.position = popupHidden.position * (1 - t) + popupDisplayed.position * t;
         }
     }
 
@@ -171,49 +167,30 @@ public class OverWorldHUD : MonoBehaviour
         repairsAddButton.interactable = available > 0 && repairs + repairsMoving != repairsMax;
     }
 
-    public bool ShowPopUp(string text, bool showButton, string buttonText = "OK", bool buttonInteractable = true, 
+    public void ShowPopUp(string text, bool showButton, string buttonText = "OK", bool buttonInteractable = true,
         UnityAction onButtonClickedAction = null)
     {
-        if (_isAnimating || _displayPopUp)
-            return false;
-
-        StopAllCoroutines();
-
         popupText.text = text;
         popupButton.gameObject.SetActive(showButton);
         popupButton.GetComponentInChildren<TMP_Text>().text = buttonText;
         popupButton.interactable = buttonInteractable;
         if (onButtonClickedAction != null)
-            popupButton.onClick.AddListener(() =>
-            {
-                if (!instance._isAnimating)
-                    onButtonClickedAction.Invoke();
-            });
+            popupButton.onClick.AddListener(onButtonClickedAction);
 
         _displayPopUp = true;
-
-        return true;
     }
 
     public void HidePopUp()
     {
         _displayPopUp = false;
         popupButton.onClick.RemoveAllListeners();
+        _animParam = 1;
     }
 
-    public void ShowPopUpForDuration(float duration, string text, bool showButton, string buttonText = "OK", bool buttonInteractable = true, 
-        UnityAction onButtonClickedAction = null)
+    public void HardHidePopUp()
     {
-        Debug.Log("Here");
-        if (ShowPopUp(text, showButton, buttonText, buttonInteractable, onButtonClickedAction))
-        {
-            StartCoroutine(HidPopUpAfterDuration(duration));
-        }
-    }
-
-    private IEnumerator HidPopUpAfterDuration(float duration)
-    {
-        yield return new WaitForSeconds(duration);
         HidePopUp();
+        popupHolder.transform.position = popupHidden.position;
+        _animParam = 0;
     }
 }
