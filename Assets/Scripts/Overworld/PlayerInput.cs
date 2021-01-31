@@ -95,27 +95,25 @@ public class PlayerInput : MonoBehaviour
         {
             shipController.FireLeft();
             if (shipController.crew.cannons.working == 0)
-                OverWorldHUD.instance.ShowPopUpForDuration(3f,
-                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
-                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+            {
+                // OverWorldHUD.instance.ShowPopUpForDuration(3f, "You need to have crew members on the Cannons Station in order to fire a cannon", true, onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             shipController.FireRight();
             if (shipController.crew.cannons.working == 0)
-                OverWorldHUD.instance.ShowPopUpForDuration(3f,
-                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
-                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+            {
+                // OverWorldHUD.instance.ShowPopUpForDuration(3f, "You need to have crew members on the Cannons Station in order to fire a cannon", true, onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+            }
         }
 
         if (Input.GetMouseButtonDown(1))
         {
             if (shipController.crew.cannons.working == 0)
             {
-                OverWorldHUD.instance.ShowPopUpForDuration(3f,
-                    "You need to have crew members on the Cannons Station in order to fire a cannon", true,
-                    onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+                // OverWorldHUD.instance.ShowPopUpForDuration(3f, "You need to have crew members on the Cannons Station in order to fire a cannon", true, onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
             }
             else
             {
@@ -154,8 +152,9 @@ public class PlayerInput : MonoBehaviour
             {
                 shipController.targetSailAmount++;
                 if (shipController.crew.sails.working == 0)
-                    OverWorldHUD.instance.ShowPopUpForDuration(2f,
-                        "You need to have crew members on the Sails Station in order to change the sails", false);
+                {
+                    //OverWorldHUD.instance.ShowPopUpForDuration(2f, "You need to have crew members on the Sails Station in order to change the sails", false);
+                }
             }
         }
 
@@ -165,8 +164,9 @@ public class PlayerInput : MonoBehaviour
             {
                 shipController.targetSailAmount--;
                 if (shipController.crew.sails.working == 0)
-                    OverWorldHUD.instance.ShowPopUpForDuration(2f,
-                        "You need to have crew members on the Sails Station in order to change the sails", false);
+                {
+                    // OverWorldHUD.instance.ShowPopUpForDuration(2f, "You need to have crew members on the Sails Station in order to change the sails", false);
+                }
             }
         }
 

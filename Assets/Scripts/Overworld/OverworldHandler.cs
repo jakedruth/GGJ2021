@@ -31,18 +31,22 @@ public class OverWorldHandler : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    // TODO: Eventually make an island class for the over world
-    public void LandOnIsland(object island)
+    public void LandOnIsland(Island island)
     {
-
+        SceneManager.LoadScene("HomePortMenu", LoadSceneMode.Additive);
+        Time.timeScale = 0;
     }
 
-    public void LeaveIsland(object island)
+    public void LeaveIsland(object other)
     {
         Time.timeScale = 1;
-        if (island is HomePortHandler port)
+        if (other is HomePortHandler port)
         {
             SceneManager.UnloadSceneAsync("HomePortMenu");
+        }
+        else if (other is Island island)
+        {
+
         }
     }
 }
