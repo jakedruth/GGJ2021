@@ -33,7 +33,13 @@ public class OverWorldHandler : MonoBehaviour
 
     public void LandOnIsland(Island island)
     {
-        SceneManager.LoadScene("Minigame Testing", LoadSceneMode.Additive);
+        const string sceneName = "Minigame Testing";
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        asyncOperation.completed += operation =>
+        {
+            Time.timeScale = 0;
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+        };
         Time.timeScale = 0;
     }
 
@@ -49,6 +55,8 @@ public class OverWorldHandler : MonoBehaviour
             Debug.Log("here");
             SceneManager.UnloadSceneAsync("Minigame Testing");
         }
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Over World Sailing"));
     }
 }
 
