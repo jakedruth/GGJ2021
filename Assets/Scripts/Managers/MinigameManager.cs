@@ -113,7 +113,10 @@ public class MinigameManager : MonoBehaviour
         //Clear the grid of all tiles
         foreach (MinigameTile tile in tiles)
         {
-            Destroy(tile.gameObject);
+            if (tile != null)
+            {
+                Destroy(tile.gameObject);
+            }
         }
         tiles.Clear();
     }
@@ -138,7 +141,7 @@ public class MinigameManager : MonoBehaviour
             tempTreasure.value = Random.Range(1, currentTreasureValueMax);
             treasures.Add(tempTreasure);
 
-            runningValue -= currentTreasureValueMax;
+            runningValue -= tempTreasure.value;
         }
     }
     int CalculateTile(int x, int y)

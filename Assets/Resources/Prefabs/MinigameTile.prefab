@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 96970629}
   - component: {fileID: 96970630}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Crack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3742335341217318568}
   - component: {fileID: 2218972461329672681}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 5704746376891247939}
   - component: {fileID: 5704746376891247936}
   - component: {fileID: 5704746376891247937}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MinigameTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
