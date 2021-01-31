@@ -16,94 +16,80 @@ public class AIInput : MonoBehaviour
     public float minRange;
     public float midRange;
     public float maxRange;
+    public float changeDirRate;
+    private Vector2 _input;
+    public float sinkRate;
+    private float _sink;
 
     void Awake()
     {
         _shipController = GetComponent<ShipController>();
+        _shipController.onShipDestroyed.AddListener(OnShipDestroyed);
+
         _inputVectors = new Vector2[Map.numDirections];
         for (int i = 0; i < Map.numDirections; i++)
         {
             float angle = i * Mathf.PI * 2 / Map.numDirections;
             _inputVectors[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
         }
+    }
 
+    void OnShipDestroyed(ShipController ship)
+    {
+        _shipController = null;
+        _sink = 1;
+        GetComponent<CompositeCollider2D>().enabled = false;
     }
     
     // Update is called once per frame
     void Update()
     {
+        if (_shipController == null)
+        {
+            HandleDeath();
+            return;
+        }
+
         Vector2 pos = transform.position;
         Vector2 targetPos = target.position;
         Vector3 delta = targetPos - pos;
-        Vector3 direction = delta.normalized;
+        float distance = delta.magnitude;
 
         Map chase = GetChasePlayerMap();
+        chase *= delta.sqrMagnitude / (maxRange * maxRange);
 
         Map side = GetSideStepPlayer();
-        float sideWeight = Mathf.Clamp(midRange / delta.magnitude, 0, 4);
+        float sideWeight = Mathf.Min(Mathf.Abs(1 + 2f / (midRange - distance)), 2);
         side *= sideWeight;
 
         Map away = GetAwayFromPlayer();
-        float awayWeight = minRange / delta.magnitude;
+        float awayWeight = minRange / distance;
         away *= awayWeight;
 
         Map facing = GetFavorFacing();
+        facing *= 0.5f;
 
-        Map map = (chase + side + away + facing);
+        Map moveAwayFromShips = MoveAwayFromAllShips();
+
+        Map map = (chase + side + away + facing) + moveAwayFromShips;
         DebugMap(map);
 
-        Vector2 input = map.GetStrongest(_inputVectors);
-        _shipController.HandleMovementInput(input);
+        Vector2 targetInput = map.GetStrongest(_inputVectors);
+        _input = Vector2.MoveTowards(_input, targetInput, changeDirRate * Time.deltaTime);
+        _shipController.HandleMovementInput(_input);
 
-
-        //Vector2 perpendicular = Vector3.Cross(direction, Vector3.forward) * minRange;
-        //Debug.DrawLine(pos, targetPos + perpendicular);
-        //Vector2 newDir = (targetPos + perpendicular) - pos;
-        //_shipController.HandleMovementInput(newDir.normalized);
-
-        //Map inputMap = GetSideStepPlayer();
-        //if (delta.sqrMagnitude < maxRange * maxRange && delta.sqrMagnitude > midRange * midRange)
-        //{
-        //    float t = 0.5f;
-        //    inputMap = Map.Lerp(GetChasePlayerMap(), GetSideStepPlayer(), t);
-        //}
-        //else if (delta.sqrMagnitude < midRange * midRange&& delta.sqrMagnitude > minRange * minRange)
-        //{
-        //    float t = 0.5f;
-        //    inputMap = Map.Lerp(GetSideStepPlayer(), GetAwayFromPlayer(), t);
-        //} 
-        //else if (delta.sqrMagnitude < minRange * minRange)
-        //{
-        //    inputMap = GetAwayFromPlayer();
-        //}
-
-        //Vector2 input = inputMap.GetStrongest(_inputVectors);
-
-        //_shipController.HandleMovementInput(input);
-        //inputMap.Debug(transform.position, _inputVectors);
-
-        //float[] map = GetChasePlayerMap();
-
-        //for (int i = 0; i < Map.numDirections; i++)
-        //{
-        //    //Color c = Color.Lerp(Color.red, Color.green, (_inputStrength[i] + 1) * 0.5f);
-        //    Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * map[i] * 2, Color.green);
-        //}
-
-        //Vector2 moveInput = AverageMap(map);
-
-        //_shipController.HandleMovementInput(moveInput);
-
-
-
-        //if (delta.sqrMagnitude > maxRange * maxRange)
-        //    _shipController.targetSailAmount = ShipController.Sails.FULL_SAILS;
-        //else
-        //    _shipController.targetSailAmount = ShipController.Sails.QUARTER_SAILS;
-
+        int sails = Mathf.FloorToInt(4 - 3f / (1 + Mathf.Pow(-midRange + distance, 2)));
+        _shipController.targetSailAmount = (ShipController.Sails) sails;
     }
 
-    
+    private void HandleDeath()
+    {
+        _sink -= sinkRate * Time.deltaTime;
+        transform.localScale = Vector3.one * _sink; 
+        if (_sink <= 0)
+            Destroy(gameObject);
+    }
+
     public void DebugMap(Map map)
     {
         Vector2 pos = transform.position;
@@ -111,7 +97,7 @@ public class AIInput : MonoBehaviour
         {
             float mag = Mathf.Abs(map[i]);
             Color c = map[i] > 0 ? Color.green : Color.red;
-            Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * mag * 3f, c);
+            Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * mag, c);
         }
     }
 
@@ -183,77 +169,52 @@ public class AIInput : MonoBehaviour
         return map;
     }
 
+    private Map MoveAwayFromAllShips()
+    {
+        Map map = new Map();
+        Vector2 pos = transform.position;
+        ShipController[] ships = FindObjectsOfType<ShipController>();
+        foreach (ShipController ship in ships)
+        {
+            if (ship == _shipController)
+                continue;
 
-    //private float[] GetChasePlayerMap()
-    //{
-    //    float[] map = new float[Map.numDirections];
-    //    Vector2 pos = transform.position;
-    //    Vector2 targetPos = target.position;
-    //    Vector3 delta = targetPos - pos;
-    //    Vector3 direction = delta.normalized;
+            if (ship.tag == "Player")
+                continue;
 
-    //    for (int i = 0; i < Map.numDirections; i++)
-    //    {
-    //        float dot = Vector3.Dot(_inputVectors[i], direction);
-    //        map[i] = Mathf.Max(0, dot);
-    //        //Color c = Color.Lerp(Color.red, Color.green, (_inputStrength[i] + 1) * 0.5f);
-    //        //Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * ([i] + 1) * 0.5f * 2, Color.green);
-    //    }
+            Map shipMap = new Map();
+            Vector2 targetPos = ship.transform.position;
+            Vector3 delta = targetPos - pos;
+            Vector3 direction = delta.normalized;
 
-    //    return map;
-    //}
+            for (int i = 0; i < Map.numDirections; i++)
+            {
+                float dot = Vector3.Dot(_inputVectors[i], -direction);
+                dot *= 10 / (1f + delta.magnitude / 6f);
+                map[i] = 1 - Mathf.Abs(dot - 0.65f);
+            }
 
-    //private float[] GetAvoidMap()
-    //{
-    //    float[] map = new float[Map.numDirections];
-    //    Vector2 pos = transform.position;
-    //    Vector2 targetPos = target.position;
-    //    Vector3 delta = targetPos - pos;
-    //    Vector3 direction = delta.normalized;
+            map += shipMap;
+        }
 
-    //    for (int i = 0; i < Map.numDirections; i++)
-    //    {
-    //        float dot = Vector3.Dot(_inputVectors[i], direction);
-    //        map[i] = 1f - Mathf.Abs(dot - 0.65f);
-    //    }
-
-    //    return map;
-    //}
-    
-    //private Vector2 GetBestDirection(float[] map)
-    //{
-    //    int bestIndex = -1;
-    //    float bestValue = -1;
-
-    //    for (int i = 0; i < Map.numDirections; i++)
-    //    {
-    //        if (map[i] > bestValue)
-    //        {
-    //            bestValue = map[i];
-    //            bestIndex = i;
-    //        }
-    //    }
-
-    //    return _inputVectors[bestIndex] * bestValue;
-    //}
-
-    //private Vector2 AverageMap(float[] map)
-    //{
-    //    Vector2 result = Vector2.zero;
-    //    for (int i = 0; i < map.Length; i++)
-    //    {
-    //        result += _inputVectors[i] * map[i];
-    //    }
-
-    //    result *= 1f / Map.numDirections;
-    //    return result;
-    //}
+        return map;
+    }
 }
 
 public class Map
 {
     public static int numDirections { get; } = 24;
     public float[] weights = new float[numDirections];
+
+    public Map()
+    {
+        SetAll(0);
+    }
+
+    public Map(float @default)
+    {
+        SetAll(@default);
+    }
 
     public Vector2 GetStrongest(Vector2[] dir)
     {
@@ -283,6 +244,39 @@ public class Map
         return result;
     }
 
+    public Map SetAll(float value)
+    {
+        for (int i = 0; i < numDirections; i++)
+            weights[i] = value;
+
+        return this;
+    }
+
+    public Map Normalize()
+    {
+        float best = 0f;
+        for (int i = 0; i < numDirections; i++)
+        {
+            float abs = Mathf.Abs(weights[i]);
+            if (abs > best)
+                best = abs;
+        }
+
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        if (best != 0f)
+            this.Scale(1f / best);
+
+        return this;
+    }
+
+    public Map Scale(float value)
+    {
+        for (int i = 0; i < numDirections; i++)
+            weights[i] *= value;
+
+        return this;
+    }
+
     public float this[int key]
     {
         get { return weights[key]; }
@@ -303,6 +297,24 @@ public class Map
         Map newMap = new Map();
         for (int i = 0; i < numDirections; i++) 
             newMap[i] = a[i] - b[i];
+
+        return newMap;
+    }
+
+    public static Map operator *(Map a, Map b)
+    {
+        Map newMap = new Map();
+        for (int i = 0; i < numDirections; i++) 
+            newMap[i] = a[i] * b[i];
+
+        return newMap;
+    }
+
+    public static Map operator /(Map a, Map b)
+    {
+        Map newMap = new Map();
+        for (int i = 0; i < numDirections; i++) 
+            newMap[i] = a[i] / b[i];
 
         return newMap;
     }

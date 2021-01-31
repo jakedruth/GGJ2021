@@ -6,6 +6,7 @@ public class Cannonball : MonoBehaviour
 {
     public float moveSpeed;
     public float fireDistance;
+    public float damage;
     public AnimationCurve scaleOverTime;
     private float _totalLifeTime;
     private float _lifeTime;
@@ -39,14 +40,17 @@ public class Cannonball : MonoBehaviour
         Physics2D.IgnoreCollision(GetComponent<Collider2D>(), _owner.GetComponent<CompositeCollider2D>());
     }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform == _owner)
             return;
 
-        Debug.Log($"Hit Ship: {collision.gameObject.name}");
+        Debug.Log($"Cannon ball hit object: {collision.gameObject.name}");
+        ShipController sc = collision.transform.GetComponent<ShipController>();
+        if (sc != null)
+        {
+            sc.TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
-
-
 }

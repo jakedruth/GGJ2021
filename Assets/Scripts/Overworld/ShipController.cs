@@ -91,7 +91,7 @@ public class ShipController : MonoBehaviour
 
 
         // Handle Crew Repairs
-        if (hp < maxHP)
+        if (hp < maxHP && hp > 0)
         {
             float repairAmount = crewRepairRate * crew.repair.working * Time.deltaTime;
             hp += repairAmount;
@@ -100,18 +100,13 @@ public class ShipController : MonoBehaviour
 
             onShipHPChanged?.Invoke(repairAmount);
         }
-
-        //* Debug Code
-        if (Input.GetKeyDown(KeyCode.Space))
-            TakeDamage(30);
-        /* End Debug Code */
     }
 
     public void InitShip()
     {
         hp = maxHP;
         leftCannonCoolDown = rightCannonCoolDown = 1;
-        targetSailAmount = Sails.NO_SAILS;
+        //targetSailAmount = Sails.NO_SAILS;
     }
 
     public void TakeDamage(float amount)

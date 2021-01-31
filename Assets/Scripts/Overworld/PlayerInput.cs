@@ -74,11 +74,14 @@ public class PlayerInput : MonoBehaviour
     public void UpdateCrewSectionHUD()
     {
         Crew c = shipController.crew;
-        OverWorldHUD.instance.UpdateUI(
-            c.availableMembers, c.members,
-            c.sails.working, c.sails.onRoute, c.sails.max,
-            c.cannons.working, c.cannons.onRoute, c.cannons.max,
-            c.repair.working, c.repair.onRoute, c.repair.max);
+        if (OverWorldHUD.instance != null)
+        {
+            OverWorldHUD.instance.UpdateUI(
+                c.availableMembers, c.members,
+                c.sails.working, c.sails.onRoute, c.sails.max,
+                c.cannons.working, c.cannons.onRoute, c.cannons.max,
+                c.repair.working, c.repair.onRoute, c.repair.max);
+        }
     }
 
     public void OnShipChangeHP(float amount)
@@ -116,7 +119,7 @@ public class PlayerInput : MonoBehaviour
         {
             if (shipController.crew.cannons.working == 0)
             {
-                // OverWorldHUD.instance.ShowPopUpForDuration(3f, "You need to have crew members on the Cannons Station in order to fire a cannon", true, onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
+                //OverWorldHUD.instance.ShowPopUpForDuration(3f, "You need to have crew members on the Cannons Station in order to fire a cannon", true, onButtonClickedAction: () => { OverWorldHUD.instance.HidePopUp(); });
             }
             else
             {
@@ -174,16 +177,19 @@ public class PlayerInput : MonoBehaviour
         }
 
         // Update HUD
-        OverWorldHUD.instance.SetSails01(shipController.sailAmount);
-        OverWorldHUD.instance.SetTargetSail(shipController.targetSailAmount);
-        OverWorldHUD.instance.SetHP(shipController.hp, shipController.maxHP);
-        OverWorldHUD.instance.SetSpeed(shipController.speed);
+        if (OverWorldHUD.instance != null)
+        {
+            OverWorldHUD.instance.SetSails01(shipController.sailAmount);
+            OverWorldHUD.instance.SetTargetSail(shipController.targetSailAmount);
+            OverWorldHUD.instance.SetHP(shipController.hp, shipController.maxHP);
+            OverWorldHUD.instance.SetSpeed(shipController.speed);
+        }
 
         #endregion
 
-        #region Turning Input
+    #region Turning Input
 
-        if (isMovingToTarget)
+    if (isMovingToTarget)
         {
             Vector2 pos = transform.position;
             Vector2 delta = _target - pos;
