@@ -51,9 +51,13 @@ public class MinigameManager : MonoBehaviour
     public int hitsTotal = 20;
     private int hitsLeft = 20;
     public bool isIslandBroken = false;
+    public GameObject finalScore;
+    private string scoreMessage = "You Found\n {0}gp\n Worth of\n Treasure!";
+
+    [Header("Treasure Variables")]
+    public bool allTreasureUncovered = false;
     [Range(1, 100)]
     public int islandValue;
-    private int cashOut;
 
 
     void Start()
@@ -115,11 +119,31 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Island is Broken!");
-            isIslandBroken = true;
-            currentFracture.sprite = fracturesList[fracturesList.Count -1];
-            hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
+            EndGame();
         }
+        CheckForUncoveredTreasure();
+    }
+    void EndGame()
+    {
+        isIslandBroken = true;
+        currentFracture.sprite = fracturesList[fracturesList.Count - 1];
+        hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
+
+        finalScore.SetActive(true);
+        TMPro.TMP_Text scoreText = finalScore.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
+        scoreText.text = string.Format(scoreMessage, GetCurrentScore().ToString());
+    }
+    int GetCurrentScore()
+    {
+        int currentCash = 0;
+        foreach (Treasure t in treasures)
+        {
+            if (!t.isCovered)
+            {
+                currentCash += (t.value * 10);
+            }
+        }
+        return currentCash;
     }
     public void ClearAllTiles()
     {
@@ -143,6 +167,7 @@ public class MinigameManager : MonoBehaviour
 
         while (runningValue > 0)
         {
+            //This makes sure the biggest gem you can spawn never exceeds the total value left for the island
             int currentTreasureValueMax = runningValue > 10 ? 10 : runningValue;
 
             int treasureValue = Random.Range(1, currentTreasureValueMax + 1);
@@ -150,30 +175,18 @@ public class MinigameManager : MonoBehaviour
 
             //Spawn a treasure with a random value between 0 and currentTreasureValueMax
             Treasure tempTreasure = Instantiate(treasurePrefabs[treasureValue - 1], new Vector3(coords.x, coords.y, distFromCam), Quaternion.identity);
-            tempTreasure.position = new Vector2Int(coords.x, coords.y);
             tempTreasure.value = treasureValue;
 
-            if (treasureValue > 5)
-            {
-                tempTreasure.position = AdjustedCoords(tempTreasure);
-                tempTreasure.transform.position = new Vector3(tempTreasure.position.x, tempTreasure.position.y);
-            }
+            tempTreasure.SetPostition(new Vector3(coords.x, coords.y, distFromCam), (treasureValue > 5));
 
-            int attempts = 10;
+            int attempts = 20;
             while (attempts > 0)
-            {
+            { 
                 if (IsTreasureColliding(tempTreasure))
                 {
                     coords = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
 
-                    tempTreasure.transform.position = new Vector3(coords.x, coords.y, distFromCam);
-                    tempTreasure.position = new Vector2Int(coords.x, coords.y);
-
-                    if (treasureValue > 5)
-                    {
-                        tempTreasure.position = AdjustedCoords(tempTreasure);
-                        tempTreasure.transform.position = new Vector3(tempTreasure.position.x, tempTreasure.position.y);
-                    }
+                    tempTreasure.SetPostition(new Vector3(coords.x, coords.y, distFromCam), (treasureValue > 5));
                 }
                 else
                 {
@@ -193,18 +206,36 @@ public class MinigameManager : MonoBehaviour
             }
         }
     }
-    Vector2Int AdjustedCoords(Treasure treasure)
+    void CheckForUncoveredTreasure()
     {
-        int x = treasure.position.x;
-        int y = treasure.position.y;
+        allTreasureUncovered = true;
 
-        if (treasure.position.x == gridWidth - 1)
-            x--;
-        if (treasure.position.y == gridHeight - 1)
-            y--;
-
-        return new Vector2Int(x, y);
+        //Loop through all the treasures
+        foreach (Treasure t in treasures)
+        {
+            //If this treasure isnt uncovered yet, check if it is
+            if (t.isCovered)
+            {
+                bool thisTreasureCovered = false;
+                //check the tiles the cover each treasures against the tiles still in the game
+                //if none match then the treaure is uncovered
+                foreach (Vector3 tilePos in t.tilesCoveringThis)
+                {
+                    if (Physics2D.OverlapPoint(tilePos))
+                    {
+                        allTreasureUncovered = false;
+                        thisTreasureCovered = true;
+                        break;
+                    }
+                }
+                if (!thisTreasureCovered)
+                {
+                    t.isCovered = false;
+                }
+            }
+        }
     }
+    
     bool IsTreasureColliding(Treasure treasure)
     {
         bool foundOverlap = false;
