@@ -37,16 +37,17 @@ public class OverWorldHandler : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    public void LeaveIsland(object other)
+    public void LeaveIsland(object island)
     {
         Time.timeScale = 1;
-        if (other is HomePortHandler port)
+        if (island is HomePortHandler port)
         {
             SceneManager.UnloadSceneAsync("HomePortMenu");
         }
-        else if (other is Island island)
+        else if (island is MinigameManager minigame)
         {
-
+            Debug.Log("here");
+            SceneManager.UnloadSceneAsync("Minigame Testing");
         }
     }
 }

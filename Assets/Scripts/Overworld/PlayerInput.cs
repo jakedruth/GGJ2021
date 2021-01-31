@@ -89,6 +89,9 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.instance.isPaused)
+            return;
+
         #region Cannon Controls
 
         if (Input.GetKeyDown(KeyCode.Q))

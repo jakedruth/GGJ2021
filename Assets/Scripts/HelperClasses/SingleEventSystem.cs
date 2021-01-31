@@ -8,7 +8,7 @@ public class SingleEventSystem : UnityEngine.EventSystems.EventSystem
     {
         if (FindObjectsOfType<SingleEventSystem>().Length > 1)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
