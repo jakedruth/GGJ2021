@@ -93,7 +93,8 @@ public class ShipController : MonoBehaviour
         // Handle Crew Repairs
         if (hp < maxHP && hp > 0)
         {
-            float repairAmount = crewRepairRate * crew.repair.working * Time.deltaTime;
+            float standingStillBonus = 1 + 4 * (baseSpeed - speed) / baseSpeed;
+            float repairAmount = crewRepairRate * crew.repair.working * standingStillBonus * Time.deltaTime;
             hp += repairAmount;
             if (hp > maxHP)
                 hp = maxHP;
