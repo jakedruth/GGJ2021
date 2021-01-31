@@ -8,10 +8,12 @@ public class MinigameManager : MonoBehaviour
     {
         Pickaxe,
         Hammer,
-        OneDamage
+        OneDamage,
+        ClearBoard
     }
 
     GameObject levelGrid;
+    private float distFromCam = -5f;
     public Camera cam;
 
     [Header("Tile Variables")]
@@ -54,6 +56,7 @@ public class MinigameManager : MonoBehaviour
     void Start()
     {
         levelGrid = new GameObject("Level Grid");
+        levelGrid.transform.position = new Vector3(0, 0, distFromCam);
         GenerateLevel();
     }
 
@@ -105,6 +108,15 @@ public class MinigameManager : MonoBehaviour
             hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
         }
     }
+    public void ClearAllTiles()
+    {
+        //Clear the grid of all tiles
+        foreach (MinigameTile tile in tiles)
+        {
+            Destroy(tile.gameObject);
+        }
+        tiles.Clear();
+    }
     public void SwitchTools(int _tool)
     {
         tool = (ToolType)_tool;
@@ -122,7 +134,8 @@ public class MinigameManager : MonoBehaviour
             int yCoord = Random.Range(0, gridHeight);
 
             //Spawn a treasure with a random value between 0 and currentTreasureValueMax
-            Treasure tempTreasure = Instantiate(resourceTreasure, new Vector3(xCoord, yCoord), Quaternion.identity);
+            Treasure tempTreasure = Instantiate(resourceTreasure, new Vector3(xCoord, yCoord, distFromCam), Quaternion.identity);
+            tempTreasure.value = Random.Range(1, currentTreasureValueMax);
             treasures.Add(tempTreasure);
 
             runningValue -= currentTreasureValueMax;
@@ -165,13 +178,20 @@ public class MinigameManager : MonoBehaviour
         offsetX = Random.Range(0f, 99999f);
         offsetY = Random.Range(0f, 99999f);
 
-        //Clear the grid of all tiles
+        //Clear the grid/list of all tiles
         for (int i = 0; i < levelGrid.transform.childCount; i++)
         {
             Destroy(levelGrid.transform.GetChild(i).gameObject);
         }
         tiles.Clear();
-        
+
+        foreach (Treasure treasure in treasures)
+        {
+            Destroy(treasure.gameObject);
+        }
+        treasures.Clear();
+
+        //Load all the necessary resources
         MinigameTile resourceTile = Resources.Load<MinigameTile>($"Prefabs/{minigameTilePrefabName}");
         MinigameTileBorder resourceTileBorder = Resources.Load<MinigameTileBorder>($"Prefabs/{minigameTileBorderPrefabName}");
         GameObject resourceTileBG = Resources.Load<GameObject>($"Prefabs/{minigameTileBGPrefabName}");
@@ -182,7 +202,7 @@ public class MinigameManager : MonoBehaviour
             for (int x = 0; x < gridWidth; x++)
             {
                 //Destructable tile
-                MinigameTile tempTile = Instantiate(resourceTile, new Vector3(x, y), Quaternion.identity);
+                MinigameTile tempTile = Instantiate(resourceTile, new Vector3(x, y, distFromCam), Quaternion.identity);
                 tiles.Add(tempTile);
                 tempTile.transform.SetParent(levelGrid.transform);
 
@@ -190,7 +210,7 @@ public class MinigameManager : MonoBehaviour
                 tempTile.AssignSpriteBasedOnMaxHealth(CalculateTile(x, y));
 
                 //Background tile
-                GameObject tempTileBG = Instantiate(resourceTileBG, new Vector3(x, y), Quaternion.identity);
+                GameObject tempTileBG = Instantiate(resourceTileBG, new Vector3(x, y, distFromCam), Quaternion.identity);
                 tempTileBG.transform.SetParent(levelGrid.transform);
             }
         }
@@ -202,7 +222,7 @@ public class MinigameManager : MonoBehaviour
                 if (isBorderTile(x, y))
                 {
                     //Border tile
-                    MinigameTileBorder tempTileBorder = Instantiate(resourceTileBorder, new Vector3(x, y), Quaternion.identity);
+                    MinigameTileBorder tempTileBorder = Instantiate(resourceTileBorder, new Vector3(x, y, distFromCam), Quaternion.identity);
                     tempTileBorder.transform.SetParent(levelGrid.transform);
 
                     tempTileBorder.AssignSpriteBasedOnNeighbors(GetDirection(x, y));

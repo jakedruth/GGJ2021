@@ -49,6 +49,9 @@ public class MinigameTile : MonoBehaviour
             case MinigameManager.ToolType.OneDamage:
                 Dig(1);
                 break;
+            case MinigameManager.ToolType.ClearBoard:
+                minigameManager.ClearAllTiles();
+                break;
             default:
                 break;
         }
