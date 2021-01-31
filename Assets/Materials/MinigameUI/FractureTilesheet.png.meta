@@ -1,37 +1,37 @@
 fileFormatVersion: 2
-guid: b1f4f12139e3a8f458fddf1959553fa4
+guid: a4310063395fbff45a6f5712bbc9359b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7329026633175718074
-    second: FractureTilesheet_0
+      213: -9222874435079193607
+    second: FractureTilesheet 1_0
   - first:
-      213: -5588859791853655791
-    second: FractureTilesheet_1
+      213: 2112466621600485580
+    second: FractureTilesheet 1_1
   - first:
-      213: 4201237009523354754
-    second: FractureTilesheet_2
+      213: -6825763147568769052
+    second: FractureTilesheet 1_2
   - first:
-      213: 1638935744150224363
-    second: FractureTilesheet_3
+      213: 296166369486237878
+    second: FractureTilesheet 1_3
   - first:
-      213: -8004938600320028479
-    second: FractureTilesheet_4
+      213: 3683889820486334245
+    second: FractureTilesheet 1_4
   - first:
-      213: -5011482563507416835
-    second: FractureTilesheet_5
+      213: 3206703123789311644
+    second: FractureTilesheet 1_5
   - first:
-      213: 3623137612069804122
-    second: FractureTilesheet_6
+      213: -6738630870659292976
+    second: FractureTilesheet 1_6
   - first:
-      213: 3469901763141187613
-    second: FractureTilesheet_7
+      213: -4271168072385556803
+    second: FractureTilesheet 1_7
   - first:
-      213: 8411723717955136474
-    second: FractureTilesheet_8
+      213: 8303235165915164737
+    second: FractureTilesheet 1_8
   - first:
-      213: 285869944677113921
-    second: FractureTilesheet_9
+      213: 9061648762174228189
+    second: FractureTilesheet 1_9
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -62,7 +62,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: -1
     aniso: -1
     mipBias: -100
     wrapU: 1
@@ -133,7 +133,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FractureTilesheet_0
+      name: FractureTilesheet 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -147,14 +147,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab8d0db54eee5b560800000000000000
-      internalID: 7329026633175718074
+      spriteID: 9fbb211f094c10080800000000000000
+      internalID: -9222874435079193607
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_1
+      name: FractureTilesheet 1_1
       rect:
         serializedVersion: 2
         x: 0
@@ -168,14 +168,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 119691f51a16072b0800000000000000
-      internalID: -5588859791853655791
+      spriteID: cc0dd54333df05d10800000000000000
+      internalID: 2112466621600485580
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_2
+      name: FractureTilesheet 1_2
       rect:
         serializedVersion: 2
         x: 0
@@ -189,14 +189,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 28c2dd11dcacd4a30800000000000000
-      internalID: 4201237009523354754
+      spriteID: 4e7163ce4940641a0800000000000000
+      internalID: -6825763147568769052
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_3
+      name: FractureTilesheet 1_3
       rect:
         serializedVersion: 2
         x: 0
@@ -210,14 +210,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bedb3c7306baeb610800000000000000
-      internalID: 1638935744150224363
+      spriteID: 6b0f4af6eb13c1400800000000000000
+      internalID: 296166369486237878
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_4
+      name: FractureTilesheet 1_4
       rect:
         serializedVersion: 2
         x: 0
@@ -231,14 +231,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c0bc1741ceb8e090800000000000000
-      internalID: -8004938600320028479
+      spriteID: 527f3cd064ecf1330800000000000000
+      internalID: 3683889820486334245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_5
+      name: FractureTilesheet 1_5
       rect:
         serializedVersion: 2
         x: 0
@@ -252,14 +252,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: df093141923a37ab0800000000000000
-      internalID: -5011482563507416835
+      spriteID: c9ee891508f708c20800000000000000
+      internalID: 3206703123789311644
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_6
+      name: FractureTilesheet 1_6
       rect:
         serializedVersion: 2
         x: 0
@@ -273,14 +273,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5817c34678f74230800000000000000
-      internalID: 3623137612069804122
+      spriteID: 0d02fd90de29b72a0800000000000000
+      internalID: -6738630870659292976
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_7
+      name: FractureTilesheet 1_7
       rect:
         serializedVersion: 2
         x: 0
@@ -294,14 +294,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d18388de441972030800000000000000
-      internalID: 3469901763141187613
+      spriteID: dbe087d8443c9b4c0800000000000000
+      internalID: -4271168072385556803
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_8
+      name: FractureTilesheet 1_8
       rect:
         serializedVersion: 2
         x: 0
@@ -315,14 +315,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: adba17d77227cb470800000000000000
-      internalID: 8411723717955136474
+      spriteID: 140b7e614640b3370800000000000000
+      internalID: 8303235165915164737
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FractureTilesheet_9
+      name: FractureTilesheet 1_9
       rect:
         serializedVersion: 2
         x: 0
@@ -336,8 +336,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 140a078333d97f300800000000000000
-      internalID: 285869944677113921
+      spriteID: dd6c0ccd98171cd70800000000000000
+      internalID: 9061648762174228189
       vertices: []
       indices: 
       edges: []

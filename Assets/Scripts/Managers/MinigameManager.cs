@@ -50,8 +50,10 @@ public class MinigameManager : MonoBehaviour
     public Image currentFracture;
     public int hitsTotal = 20;
     private int hitsLeft = 20;
+    public bool isIslandBroken = false;
     [Range(1, 100)]
     public int islandValue;
+    private int cashOut;
 
 
     void Start()
@@ -101,6 +103,8 @@ public class MinigameManager : MonoBehaviour
             currentFracture.enabled = true;
 
             int displayIndex = Mathf.FloorToInt(((float)hitsLeft / (float)hitsTotal) * fracturesList.Count);
+            if (displayIndex == 0)
+                displayIndex++;
             displayIndex = (fracturesList.Count - 1) - displayIndex;
 
             currentFracture.sprite = fracturesList[displayIndex];
@@ -111,6 +115,9 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Island is Broken!");
+            isIslandBroken = true;
+            currentFracture.sprite = fracturesList[fracturesList.Count -1];
             hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
         }
     }
@@ -240,8 +247,10 @@ public class MinigameManager : MonoBehaviour
     }
     void GenerateLevel()
     {
-        //Reset fracture bar
+        //Reset Island Health
         hitsLeft = hitsTotal;
+        isIslandBroken = false;
+        currentFracture.enabled = false;
 
         //Perlin noise map randomization
         offsetX = Random.Range(0f, 99999f);
@@ -306,7 +315,7 @@ public class MinigameManager : MonoBehaviour
         SpawnTreasure();
 
         //Center the camera to the middle of whatever size grid was generated
-        cam.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) + 1f, -10);
+        cam.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);
         //Change camera size to show the entire grid
         cam.orthographicSize = gridWidth > gridHeight ? gridWidth - 2 : gridHeight - 2;
     }
