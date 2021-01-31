@@ -4,23 +4,18 @@ using UnityEngine;
 
 public class Treasure : MonoBehaviour
 {
-    public List<Sprite> sprites;
-    public SpriteRenderer currentSprite;
-
     [Range(1, 10)]
     public int value;
+
+    public Vector2Int position;
+    public Vector2Int size;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
     }
-    public void AssignSpriteBasedOnValue()
+    public bool DoBoxesIntersect(Treasure otherTreasure)
     {
-        currentSprite.sprite = sprites[value - 1];
-        currentSprite.transform.localScale.Set(1f, 1f, 1f);
-        if (value > (sprites.Count / 2))
-        {
-            currentSprite.transform.localScale *= 2; 
-        }
+        return (Mathf.Abs(this.position.x - otherTreasure.position.x) * 2 < (this.size.x + otherTreasure.size.x)) &&
+               (Mathf.Abs(this.position.y - otherTreasure.position.y) * 2 < (this.size.y + otherTreasure.size.y));
     }
 }

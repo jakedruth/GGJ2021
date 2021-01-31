@@ -20,10 +20,11 @@ public class MinigameManager : MonoBehaviour
     public string minigameTilePrefabName;
     public string minigameTileBGPrefabName;
     public string minigameTileBorderPrefabName;
-    public string minigameTreasurePrefabName;
+    public List<string> minigameTreasurePrefabNames;
 
     public List<MinigameTile> tiles;
     public List<Treasure> treasures;
+    private List<Treasure> treasurePrefabs;
 
     [Header("Perlin Noise Adjustment")]
     [Range(1f, 20f)]
@@ -49,14 +50,25 @@ public class MinigameManager : MonoBehaviour
     public Image currentFracture;
     public int hitsTotal = 20;
     private int hitsLeft = 20;
-    [Range(1, 40)]
+    public bool isIslandBroken = false;
+    [Range(1, 100)]
     public int islandValue;
+    private int cashOut;
 
 
     void Start()
     {
         levelGrid = new GameObject("Level Grid");
         levelGrid.transform.position = new Vector3(0, 0, distFromCam);
+
+        treasurePrefabs = new List<Treasure>();
+        //Load in all the treasure prefabs to instantiate
+        foreach (string t in minigameTreasurePrefabNames)
+        {
+            Treasure resourceTreasure = Resources.Load<Treasure>($"Prefabs/Treasures/{t}");
+            treasurePrefabs.Add(resourceTreasure);
+        }
+
         GenerateLevel();
     }
 
@@ -73,10 +85,6 @@ public class MinigameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             damageIsland(-1);
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            SpawnTreasure();
         }
     }
     public void OnSetSail()
@@ -95,6 +103,8 @@ public class MinigameManager : MonoBehaviour
             currentFracture.enabled = true;
 
             int displayIndex = Mathf.FloorToInt(((float)hitsLeft / (float)hitsTotal) * fracturesList.Count);
+            if (displayIndex == 0)
+                displayIndex++;
             displayIndex = (fracturesList.Count - 1) - displayIndex;
 
             currentFracture.sprite = fracturesList[displayIndex];
@@ -105,6 +115,9 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Island is Broken!");
+            isIslandBroken = true;
+            currentFracture.sprite = fracturesList[fracturesList.Count -1];
             hitsLeft = Mathf.Clamp(hitsLeft, 0, hitsTotal);
         }
     }
@@ -126,23 +139,83 @@ public class MinigameManager : MonoBehaviour
     }
     void SpawnTreasure()
     {
-        Treasure resourceTreasure = Resources.Load<Treasure>($"Prefabs/{minigameTreasurePrefabName}");
-
         int runningValue = islandValue;
 
         while (runningValue > 0)
         {
             int currentTreasureValueMax = runningValue > 10 ? 10 : runningValue;
-            int xCoord = Random.Range(0, gridWidth);
-            int yCoord = Random.Range(0, gridHeight);
+
+            int treasureValue = Random.Range(1, currentTreasureValueMax + 1);
+            Vector2Int coords = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
 
             //Spawn a treasure with a random value between 0 and currentTreasureValueMax
-            Treasure tempTreasure = Instantiate(resourceTreasure, new Vector3(xCoord, yCoord, distFromCam), Quaternion.identity);
-            tempTreasure.value = Random.Range(1, currentTreasureValueMax);
-            treasures.Add(tempTreasure);
+            Treasure tempTreasure = Instantiate(treasurePrefabs[treasureValue - 1], new Vector3(coords.x, coords.y, distFromCam), Quaternion.identity);
+            tempTreasure.position = new Vector2Int(coords.x, coords.y);
+            tempTreasure.value = treasureValue;
 
-            runningValue -= tempTreasure.value;
+            if (treasureValue > 5)
+            {
+                tempTreasure.position = AdjustedCoords(tempTreasure);
+                tempTreasure.transform.position = new Vector3(tempTreasure.position.x, tempTreasure.position.y);
+            }
+
+            int attempts = 10;
+            while (attempts > 0)
+            {
+                if (IsTreasureColliding(tempTreasure))
+                {
+                    coords = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
+
+                    tempTreasure.transform.position = new Vector3(coords.x, coords.y, distFromCam);
+                    tempTreasure.position = new Vector2Int(coords.x, coords.y);
+
+                    if (treasureValue > 5)
+                    {
+                        tempTreasure.position = AdjustedCoords(tempTreasure);
+                        tempTreasure.transform.position = new Vector3(tempTreasure.position.x, tempTreasure.position.y);
+                    }
+                }
+                else
+                {
+                    break;
+                }
+                attempts--;
+            }
+            if (attempts > 0)
+            {
+                treasures.Add(tempTreasure);
+                runningValue -= tempTreasure.value;
+            }
+            else
+            {
+                Destroy(tempTreasure.gameObject);
+                runningValue = 0;
+            }
         }
+    }
+    Vector2Int AdjustedCoords(Treasure treasure)
+    {
+        int x = treasure.position.x;
+        int y = treasure.position.y;
+
+        if (treasure.position.x == gridWidth - 1)
+            x--;
+        if (treasure.position.y == gridHeight - 1)
+            y--;
+
+        return new Vector2Int(x, y);
+    }
+    bool IsTreasureColliding(Treasure treasure)
+    {
+        bool foundOverlap = false;
+        foreach (Treasure t in treasures)
+        {
+            if (treasure.DoBoxesIntersect(t))
+            {
+                foundOverlap = true;
+            }
+        }
+        return foundOverlap;
     }
     int CalculateTile(int x, int y)
     {
@@ -174,8 +247,10 @@ public class MinigameManager : MonoBehaviour
     }
     void GenerateLevel()
     {
-        //Reset fracture bar
+        //Reset Island Health
         hitsLeft = hitsTotal;
+        isIslandBroken = false;
+        currentFracture.enabled = false;
 
         //Perlin noise map randomization
         offsetX = Random.Range(0f, 99999f);
@@ -190,7 +265,10 @@ public class MinigameManager : MonoBehaviour
 
         foreach (Treasure treasure in treasures)
         {
-            Destroy(treasure.gameObject);
+            if (treasure != null)
+            {
+                Destroy(treasure.gameObject);
+            }
         }
         treasures.Clear();
 
@@ -232,6 +310,9 @@ public class MinigameManager : MonoBehaviour
                 }
             }
         }
+
+        //Generate Treasure based on Island Value
+        SpawnTreasure();
 
         //Center the camera to the middle of whatever size grid was generated
         cam.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);

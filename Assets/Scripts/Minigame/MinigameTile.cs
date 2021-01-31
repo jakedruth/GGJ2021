@@ -36,24 +36,27 @@ public class MinigameTile : MonoBehaviour
     
     void OnMouseDown()
     {
-        switch (minigameManager.tool)
+        if (!minigameManager.isIslandBroken)
         {
-            case MinigameManager.ToolType.Pickaxe:
-                UsePickaxe();
-                minigameManager.damageIsland(1);
-                break;
-            case MinigameManager.ToolType.Hammer:
-                UseHammer();
-                minigameManager.damageIsland(2);
-                break;
-            case MinigameManager.ToolType.OneDamage:
-                Dig(1);
-                break;
-            case MinigameManager.ToolType.ClearBoard:
-                minigameManager.ClearAllTiles();
-                break;
-            default:
-                break;
+            switch (minigameManager.tool)
+            {
+                case MinigameManager.ToolType.Pickaxe:
+                    UsePickaxe();
+                    minigameManager.damageIsland(1);
+                    break;
+                case MinigameManager.ToolType.Hammer:
+                    UseHammer();
+                    minigameManager.damageIsland(2);
+                    break;
+                case MinigameManager.ToolType.OneDamage:
+                    Dig(1);
+                    break;
+                case MinigameManager.ToolType.ClearBoard:
+                    minigameManager.ClearAllTiles();
+                    break;
+                default:
+                    break;
+            }
         }
         //Notify minigame manager to check for treasures/ updates island breaking
     }
