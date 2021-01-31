@@ -36,14 +36,14 @@ public class Treasure : MonoBehaviour
         if (isBig)
         {
             this.position = AdjustedCoords(this);
-            tilesCoveringThis.Add(transform.position);
+            tilesCoveringThis.Add(new Vector3(position.x, position.y, transform.position.z));
             tilesCoveringThis.Add(new Vector3(position.x + 1, position.y, transform.position.z));
             tilesCoveringThis.Add(new Vector3(position.x, position.y + 1, transform.position.z));
             tilesCoveringThis.Add(new Vector3(position.x + 1, position.y + 1, transform.position.z));
         }
         else
         {
-            tilesCoveringThis.Add(transform.position);
+            tilesCoveringThis.Add(new Vector3(position.x, position.y, transform.position.z));
         }
         
         transform.position = new Vector3(position.x, position.y, newPos.z);

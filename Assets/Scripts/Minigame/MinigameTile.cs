@@ -65,10 +65,10 @@ public class MinigameTile : MonoBehaviour
         Dig(minigameManager.damageMultiplier * 3);
         List<Collider2D> neighbors = new List<Collider2D>();
         //Add the four tiles to the list, in a plus sign to be destroyed
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.up));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.down));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.up, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.down, LayerMask.GetMask("Minigame")));
 
 
         foreach (Collider2D col in neighbors)
@@ -89,10 +89,10 @@ public class MinigameTile : MonoBehaviour
         List<Collider2D> neighbors = new List<Collider2D>();
 
         //Add the four adjacent tiles to the list
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.up));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.down));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.up, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.down, LayerMask.GetMask("Minigame")));
 
 
         foreach (Collider2D col in neighbors)
@@ -109,10 +109,10 @@ public class MinigameTile : MonoBehaviour
         neighbors.Clear();
 
         //Add the four corner tiles to the list
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right + Vector3.up));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left + Vector3.up));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right + Vector3.down));
-        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left + Vector3.down));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right + Vector3.up, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left + Vector3.up, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.right + Vector3.down, LayerMask.GetMask("Minigame")));
+        neighbors.Add(Physics2D.OverlapPoint(transform.position + Vector3.left + Vector3.down, LayerMask.GetMask("Minigame")));
 
 
         foreach (Collider2D col in neighbors)
