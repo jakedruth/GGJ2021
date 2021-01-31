@@ -221,7 +221,7 @@ public class MinigameManager : MonoBehaviour
                 //if none match then the treaure is uncovered
                 foreach (Vector3 tilePos in t.tilesCoveringThis)
                 {
-                    if (Physics2D.OverlapPoint(tilePos))
+                    if (Physics2D.OverlapPoint(tilePos, LayerMask.GetMask("Minigame")))
                     {
                         allTreasureUncovered = false;
                         thisTreasureCovered = true;
