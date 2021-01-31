@@ -82,7 +82,9 @@ public class OverWorldHandler : MonoBehaviour
         }
         else if (island is MinigameManager minigame)
         {
-            Debug.Log("here");
+            int gold = minigame.GetCurrentScore();
+            player.shipController.crew.gold += gold;
+            player.UpdateCrewSectionHUD();
             SceneManager.UnloadSceneAsync("Minigame Testing");
         }
 
