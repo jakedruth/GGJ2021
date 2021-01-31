@@ -133,7 +133,7 @@ public class MinigameManager : MonoBehaviour
         TMPro.TMP_Text scoreText = finalScore.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
         scoreText.text = string.Format(scoreMessage, GetCurrentScore().ToString());
     }
-    int GetCurrentScore()
+    public int GetCurrentScore()
     {
         int currentCash = 0;
         foreach (Treasure t in treasures)
