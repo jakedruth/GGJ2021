@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/_Scenes/Over World Sailing.unity
     guid: dc2dd55f06705f74c9c09810c950758e
   - enabled: 1
-    path: Assets/_Scenes/HomeportMenu.unity
+    path: Assets/_Scenes/HomePortMenu.unity
     guid: 5ceb7f65712c3dd40849a0d797f29705
+  - enabled: 1
+    path: Assets/_Scenes/Minigame Testing.unity
+    guid: 91e55619b823a604c9896e357a68b2fc
   m_configObjects: {}

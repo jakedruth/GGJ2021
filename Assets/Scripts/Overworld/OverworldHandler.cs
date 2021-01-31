@@ -33,7 +33,7 @@ public class OverWorldHandler : MonoBehaviour
 
     public void LandOnIsland(Island island)
     {
-        SceneManager.LoadScene("HomePortMenu", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Minigame Testing", LoadSceneMode.Additive);
         Time.timeScale = 0;
     }
 
