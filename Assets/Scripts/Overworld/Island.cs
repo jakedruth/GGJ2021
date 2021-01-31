@@ -8,20 +8,16 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class Island : MonoBehaviour
 {
+    public bool isHomePort;
     public float difficultyLevel;
     private PlayerInput _player;
-
-    void Start()
-    {
-
-    }
 
     void Update()
     {
         if (_player == null)
             return;
 
-        bool canLand = (_player.shipController.speed <= 0);
+        bool canLand = _player.shipController.speed <= 0;
         string text =  !canLand
             ? "In order to land on this island you need to stop." 
             : "Press the space bar or click \"land\" to hunt for buried treasure.";
@@ -42,13 +38,17 @@ public class Island : MonoBehaviour
             _player.moveToTarget.enabled = _player.isMovingToTarget = false;
 
         _player = null;
-        OverWorldHUD.instance.HidePopUp();
 
         FindObjectOfType<OverWorldHandler>().LandOnIsland(this);
 
+        OverWorldHUD.instance.HidePopUp();
+
+        if (isHomePort)
+            return;
+
         Destroy(gameObject);
     }
-
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")
@@ -56,8 +56,6 @@ public class Island : MonoBehaviour
             _player = collision.GetComponent<PlayerInput>();
             OverWorldHUD.instance.ShowPopUp("In order to land on this island you need to stop.", true, "Land", false, OnButtonClickedAction);
         }
-
-        //OverWorldHUD.instance.ShowPopUp("Press space bar to land on this island", true, "Land", true, OnButtonClickedAction);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -67,6 +65,5 @@ public class Island : MonoBehaviour
             _player = null;
             OverWorldHUD.instance.HidePopUp();
         }
-
     }
 }

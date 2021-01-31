@@ -76,11 +76,7 @@ public class PlayerInput : MonoBehaviour
         Crew c = shipController.crew;
         if (OverWorldHUD.instance != null)
         {
-            OverWorldHUD.instance.UpdateUI(
-                c.availableMembers, c.members,
-                c.sails.working, c.sails.onRoute, c.sails.max,
-                c.cannons.working, c.cannons.onRoute, c.cannons.max,
-                c.repair.working, c.repair.onRoute, c.repair.max);
+            OverWorldHUD.instance.UpdateCrewUI(shipController.crew);
         }
     }
 

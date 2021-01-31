@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -34,6 +34,9 @@ public class OverWorldHUD : MonoBehaviour
     public Button cannonsAddButton;
     public Button repairsRemoveButton;
     public Button repairsAddButton;
+
+    [Header("Storage Text")] 
+    public TMP_Text storageLogText;
 
     [Header("Pop-up Notifications")]
     public RectTransform popupHolder;
@@ -122,13 +125,13 @@ public class OverWorldHUD : MonoBehaviour
                 sailPosition += "No Sails";
                 break;
             case ShipController.Sails.QUARTER_SAILS:
-                sailPosition += "¼ Sails";
+                sailPosition += "Â¼ Sails";
                 break;
             case ShipController.Sails.HALF_SAILS:
-                sailPosition += "½ Sails";
+                sailPosition += "Â½ Sails";
                 break;
             case ShipController.Sails.THREE_QUARTERS_SAILS:
-                sailPosition += "¾ Sails";
+                sailPosition += "Â¾ Sails";
                 break;
             case ShipController.Sails.FULL_SAILS:
                 sailPosition += "Full Sails";
@@ -147,8 +150,29 @@ public class OverWorldHUD : MonoBehaviour
 
         speedText.text = $"Speed: {knots:f2} knots";
     }
-    
-    public void UpdateUI(int available, int availableMax,
+
+    public void UpdateCrewUI(Crew crew)
+    {
+        UpdateCrewSection(crew.availableMembers, crew.members,
+            crew.sails.working, crew.sails.onRoute, crew.sails.max,
+            crew.cannons.working, crew.cannons.onRoute, crew.cannons.max,
+            crew.repair.working, crew.repair.onRoute, crew.repair.max);
+
+        UpdateStorageSection(crew);
+    }
+
+    private void UpdateStorageSection(Crew crew)
+    {
+        // TODO: Get font to support ascii unicode arrows
+        string text = $"<b>Food:</b>\n" +
+                      $"\t> Daily Rations: {crew.foodRations}\n" +
+                      $"<b>Treasure:</b>\n" +
+                      $"\t> Gold: {crew.gold}gp";
+
+        storageLogText.text = text;
+    }
+
+    private void UpdateCrewSection(int available, int availableMax,
         int sails, int sailsMoving, int sailsMax,
         int cannons, int cannonsMoving, int cannonsMax,
         int repairs, int repairsMoving, int repairsMax)
@@ -182,6 +206,9 @@ public class OverWorldHUD : MonoBehaviour
 
     public void HidePopUp()
     {
+        if (!_displayPopUp)
+            return;
+
         _displayPopUp = false;
         popupButton.onClick.RemoveAllListeners();
         _animParam = 1;

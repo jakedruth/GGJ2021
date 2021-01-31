@@ -33,6 +33,12 @@ public class OverWorldHandler : MonoBehaviour
 
     public void LandOnIsland(Island island)
     {
+        if (island.isHomePort)
+        {
+            LandAtPort();
+            return;
+        }
+
         const string sceneName = "Minigame Testing";
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         asyncOperation.completed += operation =>
@@ -65,6 +71,8 @@ public class Crew
     [SerializeField] 
     public int members;
     public float moveSpeed;
+    public int foodRations;
+    public int gold;
 
     public Station sails;
     public Station cannons;
