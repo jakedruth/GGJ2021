@@ -12,7 +12,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     GameObject levelGrid;
-    public Camera camera;
+    public Camera cam;
 
     [Header("Tile Variables")]
     public string minigameTilePrefabName;
@@ -118,12 +118,14 @@ public class MinigameManager : MonoBehaviour
         while (runningValue > 0)
         {
             int currentTreasureValueMax = runningValue > 10 ? 10 : runningValue;
+            int xCoord = Random.Range(0, gridWidth);
+            int yCoord = Random.Range(0, gridHeight);
 
             //Spawn a treasure with a random value between 0 and currentTreasureValueMax
-            Treasure tempTreasure = Instantiate(resourceTreasure, new Vector3(0, 0), Quaternion.identity);
+            Treasure tempTreasure = Instantiate(resourceTreasure, new Vector3(xCoord, yCoord), Quaternion.identity);
             treasures.Add(tempTreasure);
 
-            //Set position to an open spot in the grid
+            runningValue -= currentTreasureValueMax;
         }
     }
     int CalculateTile(int x, int y)
@@ -209,9 +211,9 @@ public class MinigameManager : MonoBehaviour
         }
 
         //Center the camera to the middle of whatever size grid was generated
-        camera.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);
+        cam.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);
         //Change camera size to show the entire grid
-        camera.orthographicSize = gridWidth > gridHeight ? gridWidth - 2 : gridHeight - 2;
+        cam.orthographicSize = gridWidth > gridHeight ? gridWidth - 2 : gridHeight - 2;
     }
 
     bool isBorderTile(int x, int y)
