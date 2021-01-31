@@ -12,6 +12,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     GameObject levelGrid;
+    public Camera camera;
 
     [Header("Tile Variables")]
     public string minigameTilePrefabName;
@@ -208,9 +209,9 @@ public class MinigameManager : MonoBehaviour
         }
 
         //Center the camera to the middle of whatever size grid was generated
-        Camera.main.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);
+        camera.transform.position = new Vector3((gridWidth * .5f) - .5f, (gridHeight * .5f) - .5f, -10);
         //Change camera size to show the entire grid
-        Camera.main.orthographicSize = gridWidth > gridHeight ? gridWidth - 2 : gridHeight - 2;
+        camera.orthographicSize = gridWidth > gridHeight ? gridWidth - 2 : gridHeight - 2;
     }
 
     bool isBorderTile(int x, int y)
