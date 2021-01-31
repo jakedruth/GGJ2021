@@ -17,7 +17,10 @@ public class AIInput : MonoBehaviour
     public float midRange;
     public float maxRange;
     public float changeDirRate;
+    public float maxFiringRange;
+    public float minFireGradient;
     private Vector2 _input;
+    
     public float sinkRate;
     private float _sink;
 
@@ -32,6 +35,9 @@ public class AIInput : MonoBehaviour
             float angle = i * Mathf.PI * 2 / Map.numDirections;
             _inputVectors[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
         }
+
+        if (target == null)
+            target = FindObjectOfType<PlayerInput>().transform;
     }
 
     void OnShipDestroyed(ShipController ship)
@@ -50,36 +56,65 @@ public class AIInput : MonoBehaviour
             return;
         }
 
+        // Get Direction to target
         Vector2 pos = transform.position;
         Vector2 targetPos = target.position;
         Vector3 delta = targetPos - pos;
         float distance = delta.magnitude;
 
+        // Create Maps
+        // Chase Player map
         Map chase = GetChasePlayerMap();
         chase *= delta.sqrMagnitude / (maxRange * maxRange);
 
+        // Circle around the player map
         Map side = GetSideStepPlayer();
         float sideWeight = Mathf.Min(Mathf.Abs(1 + 2f / (midRange - distance)), 2);
         side *= sideWeight;
 
+        // Move Away from the player
         Map away = GetAwayFromPlayer();
         float awayWeight = minRange / distance;
         away *= awayWeight;
 
+        // Prefer moving in the current direction
         Map facing = GetFavorFacing();
         facing *= 0.5f;
 
+        // Try and figure out how to move away form other ships
         Map moveAwayFromShips = MoveAwayFromAllShips();
+        for (int i = 0; i < Map.numDirections; i++)
+        {
+            if (moveAwayFromShips[i] <= -1f)
+                moveAwayFromShips[i] = 0;
+            else
+                moveAwayFromShips[i] = 1;
+        }
 
-        Map map = (chase + side + away + facing) + moveAwayFromShips;
+        // Add up maps as desired
+        Map map = (chase + side + away + facing);
         DebugMap(map);
 
+        // Calculate the target Input from the map
         Vector2 targetInput = map.GetStrongest(_inputVectors);
         _input = Vector2.MoveTowards(_input, targetInput, changeDirRate * Time.deltaTime);
         _shipController.HandleMovementInput(_input);
 
-        int sails = Mathf.FloorToInt(4 - 3f / (1 + Mathf.Pow(-midRange + distance, 2)));
+        int sails = Mathf.FloorToInt(4.5f - 3.2f / (1 + Mathf.Pow(-midRange + distance, 2)));
         _shipController.targetSailAmount = (ShipController.Sails) sails;
+
+        // Handle Firing Cannons
+        if (distance <= maxFiringRange)
+        {
+            float dot = Vector3.Dot(transform.right, delta.normalized);
+            float pointing = 1f - Mathf.Abs(dot);
+
+            if (pointing > minFireGradient)
+            {
+                _shipController.FireLeft();
+                _shipController.FireRight();
+            }
+        }
     }
 
     private void HandleDeath()
@@ -97,7 +132,8 @@ public class AIInput : MonoBehaviour
         {
             float mag = Mathf.Abs(map[i]);
             Color c = map[i] > 0 ? Color.green : Color.red;
-            Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * mag, c);
+            if (map[i] > -0.5f)
+                Debug.DrawRay(pos + _inputVectors[i], _inputVectors[i] * mag, c);
         }
     }
 
@@ -190,7 +226,7 @@ public class AIInput : MonoBehaviour
             for (int i = 0; i < Map.numDirections; i++)
             {
                 float dot = Vector3.Dot(_inputVectors[i], -direction);
-                dot *= 10 / (1f + delta.magnitude / 6f);
+                dot *= 20 / (1f + delta.magnitude / 6f);
                 map[i] = 1 - Mathf.Abs(dot - 0.65f);
             }
 
@@ -277,6 +313,30 @@ public class Map
         return this;
     }
 
+    public Map Min(float min)
+    {
+        for (int i = 0; i < numDirections; i++)
+            weights[i] = Mathf.Min(min, weights[i]);
+
+        return this;
+    }
+
+    public Map Max(float max)
+    {
+        for (int i = 0; i < numDirections; i++)
+            weights[i] = Mathf.Max(max, weights[i]);
+
+        return this;
+    }
+
+    public Map Clamp(float min, float max)
+    {
+        for (int i = 0; i < numDirections; i++)
+            weights[i] = Mathf.Clamp(weights[i], min, max);
+
+        return this;
+    }
+
     public float this[int key]
     {
         get { return weights[key]; }
@@ -315,6 +375,24 @@ public class Map
         Map newMap = new Map();
         for (int i = 0; i < numDirections; i++) 
             newMap[i] = a[i] / b[i];
+
+        return newMap;
+    }
+
+    public static Map operator +(Map map, float t)
+    {
+        Map newMap = new Map();
+        for (int i = 0; i < numDirections; i++) 
+            newMap[i] = map[i] + t;
+
+        return newMap;
+    }
+
+    public static Map operator -(Map map, float t)
+    {
+        Map newMap = new Map();
+        for (int i = 0; i < numDirections; i++) 
+            newMap[i] = map[i] - t;
 
         return newMap;
     }
