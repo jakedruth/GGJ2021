@@ -73,7 +73,6 @@ public class PlayerInput : MonoBehaviour
 
     public void UpdateCrewSectionHUD()
     {
-        Crew c = shipController.crew;
         if (OverWorldHUD.instance != null)
         {
             OverWorldHUD.instance.UpdateCrewUI(shipController.crew);
