@@ -32,8 +32,9 @@ public class GameManager : MonoBehaviour
             return;
 
         onPausedChanged?.Invoke(value);
-
         isPaused = value;
+
+        Time.timeScale = isPaused ? 0 : 1;
     }
 
     // TODO: move this to a new locations

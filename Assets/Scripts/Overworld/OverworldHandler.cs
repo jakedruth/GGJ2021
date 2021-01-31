@@ -28,7 +28,7 @@ public class OverWorldHandler : MonoBehaviour
     public void LandAtPort()
     {
         SceneManager.LoadScene("HomePortMenu", LoadSceneMode.Additive);
-        Time.timeScale = 0;
+        GameManager.instance.SetPause(true);
     }
 
     public void LandOnIsland(Island island)
@@ -37,15 +37,14 @@ public class OverWorldHandler : MonoBehaviour
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         asyncOperation.completed += operation =>
         {
-            Time.timeScale = 0;
+            GameManager.instance.SetPause(true);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         };
-        Time.timeScale = 0;
     }
 
     public void LeaveIsland(object island)
     {
-        Time.timeScale = 1;
+        GameManager.instance.SetPause(false);
         if (island is HomePortHandler port)
         {
             SceneManager.UnloadSceneAsync("HomePortMenu");
