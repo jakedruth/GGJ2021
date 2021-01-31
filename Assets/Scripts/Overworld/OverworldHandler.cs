@@ -3,11 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class OverWorldHandler : MonoBehaviour
 {
     private OverWorldHUD _hud;
-    public PlayerInput player;
+    internal PlayerInput player;
+
+    public RangedFloat spawnPirateRange;
+    public float spawnPirateTimer;
+    private float _timer;
+
 
     void Start()
     {
@@ -16,7 +22,26 @@ public class OverWorldHandler : MonoBehaviour
         
         UpdateHUD();
     }
-    
+
+    void Update()
+    {
+        _timer -= Time.deltaTime;
+        if (_timer <= 0)
+        {
+            _timer += spawnPirateTimer;
+            SpawnPirateTimer();
+        }
+    }
+
+    private void SpawnPirateTimer()
+    {
+        Vector3 right = Vector3.right * spawnPirateRange.GetRandomValue;
+        Vector2 pos = transform.position + Quaternion.AngleAxis(Random.Range(0, 360f), Vector3.forward) * right;
+
+        AIInput resource = Resources.Load<AIInput>("Prefabs/AI_Ship");
+        AIInput pirate = Instantiate(resource, pos, Quaternion.identity);
+    }
+
     public void UpdateHUD()
     {
         //_hud.UpdateUI();
