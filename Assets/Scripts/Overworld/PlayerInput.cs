@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(ShipController))]
 public class PlayerInput : MonoBehaviour
 {
-    public ShipController shipController;
+    internal ShipController shipController;
     
     [Header("Required Transforms")]
     public SpriteRenderer moveToTarget;
     public Transform fireLeftText;
     public Transform fireRightText;
     private Vector2 _target;
-    private bool _isMovingToTarget;
+    internal bool isMovingToTarget;
 
     void Awake()
     {
@@ -183,7 +183,7 @@ public class PlayerInput : MonoBehaviour
 
         #region Turning Input
 
-        if (_isMovingToTarget)
+        if (isMovingToTarget)
         {
             Vector2 pos = transform.position;
             Vector2 delta = _target - pos;
@@ -192,7 +192,7 @@ public class PlayerInput : MonoBehaviour
             const float rangeToStop = 1f;
             if (delta.sqrMagnitude <= rangeToStop * rangeToStop)
             {
-                moveToTarget.enabled = _isMovingToTarget = false;
+                moveToTarget.enabled = isMovingToTarget = false;
             }
         }
 
@@ -202,13 +202,13 @@ public class PlayerInput : MonoBehaviour
             {
                 _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 moveToTarget.transform.position = _target;
-                moveToTarget.enabled = _isMovingToTarget = true;
+                moveToTarget.enabled = isMovingToTarget = true;
             }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-                moveToTarget.enabled = _isMovingToTarget = false;
+                moveToTarget.enabled = isMovingToTarget = false;
 
             if (Input.GetKey(KeyCode.A))
                 shipController.HandleMovementInput(transform.up);

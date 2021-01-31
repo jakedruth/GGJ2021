@@ -29,7 +29,6 @@ public class ShipController : MonoBehaviour
     public float baseSpeedCrewBonus;
     internal float speed;
     public float turnSpeed;
-    private float _heading;
     public float acceleration;
     private Vector3 _driftingVel;
 
@@ -133,9 +132,10 @@ public class ShipController : MonoBehaviour
     public void HandleMovementInput(Vector2 input)
     {
         float targetAngle = Vector2.SignedAngle(Vector2.right, input);
-        _heading = Mathf.MoveTowardsAngle(_heading, targetAngle,
+        float heading = Vector2.SignedAngle(Vector2.right, transform.right);
+        float newHeading = Mathf.MoveTowardsAngle(heading, targetAngle,
             turnSpeed * (0.3f + 0.7f * speed / baseSpeed) * Time.deltaTime);
-        transform.localRotation = Quaternion.AngleAxis(_heading, Vector3.forward);
+        transform.localRotation = Quaternion.AngleAxis(newHeading, Vector3.forward);
     }
 
     public void FireLeft()

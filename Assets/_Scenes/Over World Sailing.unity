@@ -10417,10 +10417,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerShip
       objectReference: {fileID: 0}
-    - target: {fileID: 2189481771019135321, guid: 70979923608c31a4bb48d026fa271103, type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 2189481771019135322, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -10464,10 +10460,6 @@ PrefabInstance:
     - target: {fileID: 2189481771019135322, guid: 70979923608c31a4bb48d026fa271103, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4186501189321011178, guid: 70979923608c31a4bb48d026fa271103, type: 3}
-      propertyPath: m_ColliderPaths.Array.size
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70979923608c31a4bb48d026fa271103, type: 3}

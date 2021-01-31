@@ -147,7 +147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 710865772}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14, y: 5.25, z: 0}
+  m_LocalPosition: {x: 14.63, y: 4.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -667,7 +667,7 @@ MonoBehaviour:
   baseSpeedCrewBonus: 0.5
   turnSpeed: 135
   acceleration: 4
-  targetSailAmount: 0
+  targetSailAmount: 2
   changeSailRate: 0.3
   changeSailRateCrewBonus: 0.1
   cannonBallPrefabName: CannonBall
@@ -727,6 +727,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 710865773}
+  minRange: 2
+  midRange: 7
+  maxRange: 12
 --- !u!212 &3213215556662820583
 SpriteRenderer:
   m_ObjectHideFlags: 0
